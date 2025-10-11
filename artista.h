@@ -2,7 +2,10 @@
 #define ARTISTA_H
 
 #include <stddef.h>
+#include "tipo.h" // Inclui Cor e a declaração de struct Album
 
+// Inclua o cabeçalho completo do Album aqui, pois infoArtista precisa dele.
+#include "album.h" 
 /* --------- Tipos / Modelos --------- */
 
 typedef struct {
@@ -10,9 +13,8 @@ typedef struct {
     char estilo[32];
     char tipo[32];
     int  numAlbuns;
+    Album *album;
 } infoArtista;
-
-typedef enum { VERMELHO = 0, PRETO = 1 } Cor;
 
 typedef struct Artista {
     infoArtista info;
