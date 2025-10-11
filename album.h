@@ -6,11 +6,11 @@
 
 #define TAM_STRING 50
 
-typedef struct {
+typedef struct infoAlbum{
     char titulo[TAM_STRING];
     int anoLancamento;
     int quantMusica;
-    struct Musica *musica; // Ponteiro para a lista de músicas
+    struct Musica *musica; 
 } infoAlbum;
 
 typedef struct Album {
