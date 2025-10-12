@@ -42,26 +42,44 @@ void liberarArvore(Album *raiz)
 }
 
 //Busca o no pelo nome do titulo
-Album *BuscarNo(Album *raiz, int valor)
+#include <string.h> // Não se esqueça de incluir
+
+Album* BuscarNoPorTitulo(Album *raiz, const char* tituloBusca)
 {
-    Album *no;
+    // 1. Cria um ponteiro para o nó que será retornado. Inicia com NULL.
+    Album *noEncontrado = NULL;
 
-    if (raiz->info.titulo == valor)
-    {
-        no = raiz;
-    }
-    else if(raiz->info.titulo > valor)
-    {
-        no = BuscarNo(raiz->esq, valor);
-    }
-    else if(raiz->info.titulo < valor)
-    {
-        no = BuscarNo(raiz->dir, valor);
-    }
-    else
-        no = NULL;
+    // 2. Cria um ponteiro para percorrer a árvore, começando pela raiz.
+    Album *noAtual = raiz;
 
-    return no;
+    // 3. O laço continua enquanto não chegamos ao fim de um galho (noAtual != NULL)
+    //    e enquanto ainda não encontramos o nó (noEncontrado == NULL).
+    while (noAtual != NULL && noEncontrado == NULL)
+    {
+        // Compara o título buscado com o título do nó atual
+        int comparacao = strcmp(tituloBusca, noAtual->info.titulo);
+
+        if (comparacao == 0)
+        {
+            // Encontrou! Atribui o nó atual à variável de resultado.
+            noEncontrado = noAtual;
+        }
+        else if (comparacao < 0)
+        {
+            // O título buscado vem antes, então desce para a esquerda.
+            noAtual = noAtual->esq;
+        }
+        else // (comparacao > 0)
+        {
+            // O título buscado vem depois, então desce para a direita.
+            noAtual = noAtual->dir;
+        }
+    }
+
+    // 4. Retorna a variável de resultado.
+    //    Se o nó foi encontrado, ela conterá o endereço dele.
+    //    Se o laço terminou sem encontrar, ela ainda terá o valor NULL.
+    return noEncontrado;
 }
 
 // Essa funcao inicia faz com que os nos folhas seja pretos
@@ -99,7 +117,7 @@ void rotacionaDir(Album **raiz)
 }
 
 void trocaCor(Album **raiz) {
-    (**raiz).cor = !((**raiz).cor);
+    (**raiz).cor = !((**raiz).cor); // troca a cor 
     (**raiz).esq->cor = !((**raiz).esq->cor);
     (**raiz).dir->cor = !((**raiz).dir->cor);
 }
@@ -177,5 +195,71 @@ Album *move2DirRed(Album *raiz)
     return raiz;
 }
 
+Album *removerMenor(Album *raiz)
+{
+    if ((*raiz).esq == NULL)
+    {
+        free(raiz);
+        return NULL;
+    }
 
+    if (cor(raiz->esq) == PRETO && cor(raiz->esq->esq) == PRETO)
+        raiz = move2EsqRed(raiz);
 
+    raiz->esq = removerMenor(raiz->esq);
+    return (&raiz);
+}
+
+Album *procuraMenor(Album *raiz)
+{
+    Album *aux = raiz;
+
+    while (aux->esq != NULL) 
+    {
+        aux = aux->esq;
+    }
+    return aux;
+}
+
+Album* removeNo(Album *raiz, char valor) {
+    if (valor < (*raiz).info.titulo) 
+    {
+        if (cor((*raiz).esq) == PRETO && cor((*raiz).esq->esq) == PRETO) 
+        {
+            raiz = moveTwoEsqRed(raiz);
+        }
+        (*raiz).esq = removeNo((*raiz).esq, valor);
+
+    } 
+    else 
+    {
+        if (cor((*raiz).esq) == VERMELHO) 
+        {
+            rotDir(&raiz);
+        }
+
+        if (valor == (*raiz).info.titulo && ((*raiz).dir) == NULL) 
+        {
+            free(raiz);
+            return NULL;
+        }
+
+        if (cor((*raiz).dir) == PRETO && cor((*raiz).dir->esq) == PRETO)
+        {
+            raiz = moveTwoDirRed(raiz);
+        } 
+
+        if (valor == (*raiz).info.titulo) 
+        {
+            Album *menor = procuraMenor((*raiz).dir);
+            (*raiz).info = (*menor).info;
+            (*raiz).dir = removeMenor((*raiz).dir);
+        } 
+        else 
+            (*raiz).dir = removeNo((*raiz).dir, valor);
+    }
+
+    balanceamento(&raiz);
+
+    return raiz;
+} 
