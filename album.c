@@ -54,32 +54,32 @@ int cor(Album *raiz)
     return corNo;
 }
 
-void rotacionaEsq(Album **raiz)
+void rotacionaEsq(Album *raiz)
 {
-    Album *aux = (**raiz).dir;
+    Album *aux = (raiz)->dir;
 
-    (**raiz).dir = (*aux).esq;
-    (*aux).esq = *raiz;
-    (*aux).cor = (**raiz).cor;
-    (**raiz).cor = VERMELHO;
-    (*raiz) = aux;
+    raiz->dir = aux->esq;
+    aux->esq = raiz;
+    aux->cor = raiz->cor;
+    raiz->cor = VERMELHO;
+    raiz = aux;
 }
 
-void rotacionaDir(Album **raiz)
+void rotacionaDir(Album *raiz)
 {
-    Album *aux = (**raiz).esq;
+    Album *aux = (raiz)->esq;
 
-    (**raiz).esq = (*aux).dir;
-    (*aux).dir = *raiz;
-    (*aux).cor = (**raiz).cor;
-    (**raiz).cor = VERMELHO;
-    (*raiz) = aux;
+    raiz->esq = aux->dir;
+    aux->dir = raiz;
+    aux->cor = raiz->cor;
+    raiz->cor = VERMELHO;
+    raiz = aux;
 }
 
-void trocaCor(Album **raiz) {
-    (**raiz).cor = !((**raiz).cor); // troca a cor 
-    (**raiz).esq->cor = !((**raiz).esq->cor);
-    (**raiz).dir->cor = !((**raiz).dir->cor);
+void trocaCor(Album *raiz) {
+    raiz->cor = !(raiz->cor); // troca a cor 
+    raiz->esq->cor = !(raiz->esq->cor);
+    raiz->dir->cor = !(raiz->dir->cor);
 }
 
 void balanceamento(Album **raiz) 
