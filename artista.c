@@ -3,192 +3,123 @@
 #include <string.h>
 #include "artista.h"
 
-/* ======== Funções auxiliares internas (RB) ======== */
 
-// Rotação à esquerda tendo 'noPivo' como pivô
-static void rotacaoEsq(Artista **raiz, Artista *noPivo)
-{
-    Artista *filhoDireito = noPivo->dir;
-
-    noPivo->dir = filhoDireito->esq;
-    if (filhoDireito->esq)
-        filhoDireito->esq->pai = noPivo;
-
-    filhoDireito->pai = noPivo->pai;
-    if (!noPivo->pai)
-        *raiz = filhoDireito;
-    else if (noPivo == noPivo->pai->esq)
-        noPivo->pai->esq = filhoDireito;
-    else
-        noPivo->pai->dir = filhoDireito;
-
-    filhoDireito->esq = noPivo;
-    noPivo->pai = filhoDireito;
-}
-
-// Rotação à direita tendo 'noPivo' como pivô
-static void rotacaoDir(Artista **raiz, Artista *noPivo)
-{
-    Artista *filhoEsquerdo = noPivo->esq;
-
-    noPivo->esq = filhoEsquerdo->dir;
-    if (filhoEsquerdo->dir)
-        filhoEsquerdo->dir->pai = noPivo;
-
-    filhoEsquerdo->pai = noPivo->pai;
-    if (!noPivo->pai)
-        *raiz = filhoEsquerdo;
-    else if (noPivo == noPivo->pai->esq)
-        noPivo->pai->esq = filhoEsquerdo;
-    else
-        noPivo->pai->dir = filhoEsquerdo;
-
-    filhoEsquerdo->dir = noPivo;
-    noPivo->pai = filhoEsquerdo;
-}
-
-// Corrige propriedades RB após inserir 'noInserido' (que entrou VERMELHO)
-static void corrigirInsercao(Artista **raiz, Artista *noInserido)
-{
-    while (noInserido->pai && noInserido->pai->cor == VERMELHO)
-    {
-        Artista *pai = noInserido->pai;
-        Artista *avo = pai->pai;
-
-        if (pai == avo->esq)
-        {
-            Artista *tio = avo->dir;
-
-            if (tio && tio->cor == VERMELHO)
-            {
-                // Caso 1: tio vermelho -> recoloração
-                pai->cor = PRETO;
-                tio->cor = PRETO;
-                avo->cor = VERMELHO;
-                noInserido = avo;
-            }
-            else
-            {
-                if (noInserido == pai->dir)
-                {
-                    // Caso 2: triângulo (esq-dir) -> rotaciona para alinhar
-                    noInserido = pai;
-                    rotacaoEsq(raiz, noInserido);
-                    pai = noInserido->pai;
-                    avo = pai->pai;
-                }
-                // Caso 3: linha (esq-esq) -> rotação direita no avô
-                pai->cor = PRETO;
-                avo->cor = VERMELHO;
-                rotacaoDir(raiz, avo);
-            }
-        }
-        else
-        {
-            // Lado simétrico (pai é filho direito do avô)
-            Artista *tio = avo->esq;
-
-            if (tio && tio->cor == VERMELHO)
-            {
-                pai->cor = PRETO;
-                tio->cor = PRETO;
-                avo->cor = VERMELHO;
-                noInserido = avo;
-            }
-            else
-            {
-                if (noInserido == pai->esq)
-                {
-                    noInserido = pai;
-                    rotacaoDir(raiz, noInserido);
-                    pai = noInserido->pai;
-                    avo = pai->pai;
-                }
-                pai->cor = PRETO;
-                avo->cor = VERMELHO;
-                rotacaoEsq(raiz, avo);
-            }
-        }
-    }
-    if (*raiz) (*raiz)->cor = PRETO; // raiz sempre PRETA
-}
-
-/* ======== Implementações públicas ======== */
-
-// Aloca e inicializa nó
 Artista *alocaArtista(infoArtista dados)
 {
     Artista *novoNo = (Artista *) malloc(sizeof(Artista));
-    if (!novoNo)
+    if (novoNo != NULL)
     {
-        printf("Erro de acesso a memoria.\n");
-        exit(1);
+        novoNo->esq = NULL;         // sem filho à esquerda
+        novoNo->dir = NULL;         // sem filho à direita
+        novoNo->pai = NULL;         // sem pai
+        novoNo->cor = VERMELHO;     // novo nó entra vermelho
+        novoNo->info = dados;       // copia dados
     }
-    novoNo->esq = NULL;         // sem filho à esquerda
-    novoNo->dir = NULL;         // sem filho à direita
-    novoNo->pai = NULL;         // sem pai
-    novoNo->cor = VERMELHO;     // novo nó entra vermelho
-    novoNo->info = dados;       // copia dados
     return novoNo;
 }
 
-// Entrada de dados via stdin
-infoArtista preencherDadosArtista(void)
+infoArtista preencherArtista(void)
 {
     infoArtista dados;
-    printf("Digite o nome do artista: ");   scanf("%63s", dados.nome);
-    printf("Digite o estilo do artista: "); scanf("%31s", dados.estilo);
-    printf("Digite o tipo: ");              scanf("%31s", dados.tipo);
+    printf("Digite o nome do artista: ");   scanf("%49s", dados.nome);
+    printf("Digite o estilo do artista: "); scanf("%49s", dados.estilo);
+    printf("Digite o tipo: ");              scanf("%49s", dados.tipo);
     dados.numAlbuns = 0;
     return dados;
 }
 
-// Insere como BST e corrige para RB
-int inserirArtista(Artista **raiz, Artista *noParaInserir)
+int cor (Artista *raiz){
+    int corNo = PRETO;
+    if (raiz)
+    {
+        corNo = (raiz)->cor;
+    }
+    return corNo;
+}
+
+void rotacionaEsq(Artista *raiz){
+    Artista *aux = (raiz)->dir;
+
+    raiz->dir = aux->esq;
+    aux->esq = raiz;
+    aux->cor = raiz->cor;
+    raiz->cor = VERMELHO;
+    raiz = aux;
+}
+
+void rotacionaDir(Artista *raiz){
+    Artista *aux = (raiz)->esq;
+
+    raiz->esq = aux->dir;
+    aux->dir = raiz;
+    aux->cor = raiz->cor;
+    raiz->cor = VERMELHO;
+    raiz = aux;
+}
+
+void trocaCor(Artista *raiz) {
+    raiz->cor = !(raiz->cor); // troca a cor 
+    raiz->esq->cor = !(raiz->esq->cor);
+    raiz->dir->cor = !(raiz->dir->cor);
+}
+
+void balanceamento(Artista *raiz) 
 {
-    // (1) Inserção BST iterativa para setar 'pai'
-    Artista *noAtual = *raiz;
-    Artista *possivelPai = NULL;
-
-    while (noAtual != NULL)
+    if (cor(raiz->esq) == PRETO && cor(raiz->dir) == VERMELHO)
     {
-        int comparacao = strcmp(noParaInserir->info.nome, noAtual->info.nome);
-        possivelPai = noAtual;
+        rotacionaEsq(raiz);
+    } 
 
-        if (comparacao == 0)
-        {
-            // Nome duplicado: não insere
-            return 0;
-        }
-        else if (comparacao < 0)
-        {
-            noAtual = noAtual->esq;
-        }
-        else
-        {
-            noAtual = noAtual->dir;
-        }
+    if ((cor(raiz->esq) == VERMELHO) && (cor(raiz->esq->esq) == VERMELHO))
+    {
+        rotacionaDir(raiz);
+    } 
+
+    if (cor(raiz->esq) == VERMELHO && cor(raiz->dir) == VERMELHO)
+    {
+        trocaCor(raiz); 
+    } 
+}
+
+
+int insereNo (Artista **raiz, Artista *novoNo)
+{
+    int inseriu = 1;
+
+    int cmp = strcmp(novoNo->info.nome, (*raiz)->info.nome);
+
+    if (*raiz == NULL)
+    {
+        *raiz = novoNo;
     }
-
-    // Encaixa o nó no local correto
-    noParaInserir->pai = possivelPai;
-    if (possivelPai == NULL)
+    else if (cmp < 0)
     {
-        *raiz = noParaInserir; // árvore estava vazia
+        inseriu = insereNo(&((*raiz)->esq), novoNo);
     }
-    else if (strcmp(noParaInserir->info.nome, possivelPai->info.nome) < 0)
+    else if (cmp > 0)
     {
-        possivelPai->esq = noParaInserir;
+        inseriu = insereNo(&((*raiz)->dir), novoNo);
     }
     else
     {
-        possivelPai->dir = noParaInserir;
+        inseriu = 0; // nome duplicado
     }
 
-    // (2) Corrige propriedades de RB
-    corrigirInsercao(raiz, noParaInserir);
-    return 1;
+    if (*raiz && inseriu)
+        balanceamento(raiz);
+    
+    return inseriu;
 }
+
+int  insercao(Artista **raiz, Artista *novoNo) 
+{
+    int inseriu = insereNo(raiz, novoNo);
+
+    if (inseriu) (*raiz)->cor = PRETO;
+
+    return inseriu;
+}
+
 
 // Busca por nome (iterativa)
 Artista *buscarArtista(Artista *raiz, const char *nome)
@@ -220,13 +151,12 @@ void mostrarArtistas(Artista *raiz)
     mostrarArtistas(raiz->dir);
 }
 
-// Libera toda a árvore
-void destruirArvore(Artista *raiz)
+void liberarArvore(Artista *raiz)
 {
-    if (!raiz) return;
-    destruirArvore(raiz->esq);
-    destruirArvore(raiz->dir);
-    free(raiz);
+    if (raiz != NULL)
+        liberarArvore(raiz->esq);
+        liberarArvore(raiz->dir);
+        free(raiz);
 }
 
 /* ======== Exemplo rápido ======== */

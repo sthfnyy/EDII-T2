@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <string.h> 
 #include "tipo.h"
 #include "album.h"
 
@@ -41,54 +42,13 @@ void liberarArvore(Album *raiz)
     }
 }
 
-//Busca o no pelo nome do titulo
-#include <string.h> // Não se esqueça de incluir
-
-Album* BuscarNoPorTitulo(Album *raiz, const char* tituloBusca)
-{
-    // 1. Cria um ponteiro para o nó que será retornado. Inicia com NULL.
-    Album *noEncontrado = NULL;
-
-    // 2. Cria um ponteiro para percorrer a árvore, começando pela raiz.
-    Album *noAtual = raiz;
-
-    // 3. O laço continua enquanto não chegamos ao fim de um galho (noAtual != NULL)
-    //    e enquanto ainda não encontramos o nó (noEncontrado == NULL).
-    while (noAtual != NULL && noEncontrado == NULL)
-    {
-        // Compara o título buscado com o título do nó atual
-        int comparacao = strcmp(tituloBusca, noAtual->info.titulo);
-
-        if (comparacao == 0)
-        {
-            // Encontrou! Atribui o nó atual à variável de resultado.
-            noEncontrado = noAtual;
-        }
-        else if (comparacao < 0)
-        {
-            // O título buscado vem antes, então desce para a esquerda.
-            noAtual = noAtual->esq;
-        }
-        else // (comparacao > 0)
-        {
-            // O título buscado vem depois, então desce para a direita.
-            noAtual = noAtual->dir;
-        }
-    }
-
-    // 4. Retorna a variável de resultado.
-    //    Se o nó foi encontrado, ela conterá o endereço dele.
-    //    Se o laço terminou sem encontrar, ela ainda terá o valor NULL.
-    return noEncontrado;
-}
-
 // Essa funcao inicia faz com que os nos folhas seja pretos
 int cor(Album *raiz)
 {
     int corNo = PRETO;
     if (raiz)
     {
-        corNo = (*raiz).cor;
+        corNo = (raiz)->cor;
     }
     
     return corNo;
@@ -129,7 +89,7 @@ void balanceamento(Album **raiz)
         rotacionaEsq(raiz);
     } 
 
-    if (cor((**raiz).esq) == VERMELHO) if (cor((**raiz).esq->esq) == VERMELHO)
+    if ((cor((**raiz).esq) == VERMELHO) && (cor((**raiz).esq->esq) == VERMELHO))
     {
         rotacionaDir(raiz);
     } 
@@ -139,24 +99,28 @@ void balanceamento(Album **raiz)
         trocaCor(raiz); 
     } 
 }
+
 int insereNo(Album **raiz, Album *novoNo)
 {
     int inseriu = 1;
+
+    int cmp = strcmp(novoNo->info.titulo, (*raiz)->info.titulo);
 
     if (*raiz == NULL)
     {
         *raiz = novoNo;
     }
-    else if ((**raiz).info > (*novoNo).info)
+    //tem que comparar os titulos e ver a ordem
+    else if (cmp > 0)
     {
         inseriu = insereNo(&((**raiz).esq), novoNo);
     }
-    else if ((**raiz).info < (*novoNo).info)
+    else if (cmp < 0)
     {
         inseriu = insereNo(&((**raiz).dir), novoNo);
     }
     else
-        inseriu = 0;
+        inseriu = 0; //nome duplicado
 
     if (*raiz && inseriu)
         balanceamento(raiz);
@@ -164,12 +128,52 @@ int insereNo(Album **raiz, Album *novoNo)
     return inseriu;
 }
 
-int  insercao(Album **raiz, Album *novoNo) {
+int  insercao(Album **raiz, Album *novoNo) 
+{
     int inseriu = insereNo(raiz, novoNo);
 
-    if (inseriu) (**raiz).cor = PRETO;
+    if (inseriu) (*raiz)->cor = PRETO;
 
     return inseriu;
+}
+
+
+Album* BuscarNoPorTitulo(Album *raiz, const char* tituloBusca)
+{
+    // 1. Cria um ponteiro para o nó que será retornado. Inicia com NULL.
+    Album *noEncontrado = NULL;
+
+    // 2. Cria um ponteiro para percorrer a árvore, começando pela raiz.
+    Album *noAtual = raiz;
+
+    // 3. O laço continua enquanto não chegamos ao fim de um galho (noAtual != NULL)
+    //    e enquanto ainda não encontramos o nó (noEncontrado == NULL).
+    while (noAtual != NULL && noEncontrado == NULL)
+    {
+        // Compara o título buscado com o título do nó atual
+        int comparacao = strcmp(tituloBusca, noAtual->info.titulo);
+
+        if (comparacao == 0)
+        {
+            // Encontrou! Atribui o nó atual à variável de resultado.
+            noEncontrado = noAtual;
+        }
+        else if (comparacao < 0)
+        {
+            // O título buscado vem antes, então desce para a esquerda.
+            noAtual = noAtual->esq;
+        }
+        else // (comparacao > 0)
+        {
+            // O título buscado vem depois, então desce para a direita.
+            noAtual = noAtual->dir;
+        }
+    }
+
+    // 4. Retorna a variável de resultado.
+    //    Se o nó foi encontrado, ela conterá o endereço dele.
+    //    Se o laço terminou sem encontrar, ela ainda terá o valor NULL.
+    return noEncontrado;
 }
 
 Album *move2EsqRed(Album *raiz)
