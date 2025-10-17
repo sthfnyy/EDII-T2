@@ -28,7 +28,8 @@ infoArtista preencherArtista(void)
     return dados;
 }
 
-int cor (Artista *raiz){
+int cor (Artista *raiz)
+{
     int corNo = PRETO;
     if (raiz)
     {
@@ -37,7 +38,8 @@ int cor (Artista *raiz){
     return corNo;
 }
 
-void rotacionaEsq(Artista *raiz){
+void rotacionaEsq(Artista *raiz)
+{
     Artista *aux = (raiz)->dir;
 
     raiz->dir = aux->esq;
@@ -82,7 +84,7 @@ void balanceamento(Artista *raiz)
 }
 
 
-int insereNo (Artista **raiz, Artista *novoNo)
+int inserirArtista (Artista **raiz, Artista *novoNo)
 {
     int inseriu = 1;
 

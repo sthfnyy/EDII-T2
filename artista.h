@@ -21,22 +21,18 @@ typedef struct Artista {
 } Artista;
 
 
-// Aloca e inicializa um novo nó de artista (entra VERMELHO)
+int cor (Artista *raiz);
+void rotacionaEsq(Artista *raiz);
+void rotacionaDir(Artista *raiz);
+void trocaCor(Artista *raiz);
+void balanceamento(Artista *raiz);
+
 Artista *alocaArtista(infoArtista dados);
-
-// Lê dados do artista via stdin
 infoArtista preencherArtista(void);
-
-// Insere mantendo propriedades de RB; 1 se inseriu, 0 se duplicado
-int inserirArtista(Artista **raiz, Artista *no);
-
-// Busca por nome (comparação lexicográfica)
+int inserirArtista(Artista **raiz, Artista *novoNo);
+int  insercao(Artista **raiz, Artista *novoNo) ;
 Artista *buscarArtista(Artista *raiz, const char *nome);
-
-// Impressão in-order (mostra [P]/[V] na frente)
 void mostrarArtistas(Artista *raiz);
-
-// Libera memória de toda a árvore
-void destruirArvore(Artista *raiz);
+void liberarArvore(Artista *raiz);
 
 #endif 
