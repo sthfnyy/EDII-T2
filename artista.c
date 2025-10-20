@@ -37,25 +37,27 @@ int cor (Artista *raiz)
     return corNo;
 }
 
-void rotacionaEsq(Artista **raiz)
+//tive que modificar e tirar do tipo void, pois na remoção não dava pra usar void
+Artista *rotacionaEsq(Artista *raiz)
 {
-    Artista *aux = (*raiz)->dir;
+    Artista *aux = (raiz)->dir;
 
-    (*raiz)->dir = aux->esq;
-    aux->esq = (*raiz);
-    aux->cor = (*raiz)->cor;
-    (*raiz)->cor = VERMELHO;
-    (*raiz) = aux;
+    raiz->dir = aux->esq;
+    aux->esq = raiz;
+    aux->cor = raiz->cor;
+    raiz->cor = VERMELHO;
+    return aux;
 }
 
-void rotacionaDir(Artista **raiz){
-    Artista *aux = (*raiz)->esq;
+Artista *rotacionaDir(Artista *raiz)
+{
+    Artista *aux = raiz->esq;
 
-    (*raiz)->esq = aux->dir;
-    aux->dir = (*raiz);
-    aux->cor = (*raiz)->cor;
-    (*raiz)->cor = VERMELHO;
-    (*raiz) = aux;
+    raiz->esq = aux->dir;
+    aux->dir = raiz;
+    aux->cor = raiz->cor;
+    raiz->cor = VERMELHO;
+    return aux;
 }
 
 void trocaCor(Artista *raiz) {
@@ -70,18 +72,25 @@ void balanceamento(Artista **raiz)
 {
     if (cor((*raiz)->esq) == PRETO && cor((*raiz)->dir) == VERMELHO)
     {
-        rotacionaEsq(raiz);
-    } 
+        *raiz = rotacionaEsq(*raiz);
+    }
 
-    if ((cor((*raiz)->esq) == VERMELHO) && (cor((*raiz)->esq->esq) == VERMELHO))
+    /* --- PROTEÇÃO AQUI --- */
+    if ((*raiz)->esq != NULL)
     {
-        rotacionaDir(raiz);
-    } 
+        if (cor((*raiz)->esq) == VERMELHO &&
+            (*raiz)->esq->esq != NULL &&
+            cor((*raiz)->esq->esq) == VERMELHO)
+        {
+            *raiz = rotacionaDir(*raiz);
+        }
+    }
 
     if (cor((*raiz)->esq) == VERMELHO && cor((*raiz)->dir) == VERMELHO)
     {
-        trocaCor(*raiz); 
-    } 
+        trocaCor(*raiz);
+    }
+    
 }
 
 int  insercao(Artista **raiz, Artista *novoNo) 
@@ -208,25 +217,44 @@ void liberarArvore(Artista *raiz)
 //remoção da árvore rubro-negra de artistas
 Artista* move2EsqRed(Artista *raiz)
 {
+    Artista *ret = raiz;
+
     trocaCor(raiz);
-    if (raiz->dir != NULL && cor((raiz)->dir->esq)== VERMELHO)
+
+    // só faz as rotações se houver dir e (dir->esq) vermelho
+    if (raiz != NULL && raiz->dir != NULL)
     {
-        rotacionaDir(&(raiz->dir));
-        rotacionaEsq(&raiz);
-        trocaCor(raiz);
+        if (cor(raiz->dir->esq) == VERMELHO)
+        {
+            raiz->dir = rotacionaDir(raiz->dir); // reanexa subárvore direita
+            ret = rotacionaEsq(raiz);            // novo topo após rotação
+            trocaCor(ret);
+        }
     }
+
+    return ret;
 }
+
 
 Artista* move2DirRed(Artista *raiz)
 {
+    Artista *ret = raiz;
+
     trocaCor(raiz);
-    if (cor((raiz)->esq->esq) == VERMELHO)
+
+    // só rota se existir esq e neto esquerdo vermelho
+    if (raiz != NULL && raiz->esq != NULL)
     {
-        rotacionaDir(&raiz);
-        trocaCor(raiz);
+        if (raiz->esq->esq != NULL && cor(raiz->esq->esq) == VERMELHO)
+        {
+            ret = rotacionaDir(raiz); // captura novo topo
+            trocaCor(ret);
+        }
     }
-    return raiz;
+
+    return ret;
 }
+
 
 
 Artista *removeMenor(Artista *raiz)
@@ -263,9 +291,102 @@ Artista *removeMenor(Artista *raiz)
     return resultado;  
 }
 
-/* ======== Teste rápido ======== */
+Artista *procuraMenor(Artista *raiz)
+{
+    Artista *aux = raiz;
 
-/*
+    while (aux->esq != NULL) 
+    {
+        aux = aux->esq;
+    }
+    return aux;
+}
+
+int removeArtista(Artista **raiz, const char *nomeArtista) 
+{
+    int removeu = 0;
+    if (buscarArtista (*raiz, nomeArtista)) 
+    {
+        Artista *no = *raiz;
+        *raiz = removeNo(*raiz, nomeArtista);
+        if (*raiz != NULL) 
+            (*raiz)->cor = PRETO;
+        removeu = 1;
+    }
+    return removeu;
+}
+
+
+Artista* removeNo(Artista *raiz, const char *nomeArtista) 
+{
+    Artista *resultado = raiz;
+
+    if (raiz != NULL)
+    {    
+        int cmp = strcmp(nomeArtista, raiz->info.nome);
+
+        if (cmp < 0) 
+        {
+            if (raiz->esq != NULL)
+            {
+                if (cor(raiz->esq) == PRETO &&
+                    (raiz->esq->esq == NULL || cor(raiz->esq->esq) == PRETO))
+                {
+                    raiz = move2EsqRed(raiz);
+                }
+            }
+
+            raiz->esq = removeNo(raiz->esq, nomeArtista);
+            resultado = raiz;
+        }
+        else 
+        {
+            if (cor(raiz->esq) == VERMELHO)
+            {
+                raiz = rotacionaDir(raiz);
+            }
+
+            /* --- REESTRUTURAÇÃO AQUI --- */
+            if (cmp == 0 && raiz->dir == NULL)
+            {
+                /* caso base: achou e não tem filho direito → remove e encerra este ramo */
+                free(raiz);
+                resultado = NULL;
+            }
+            else
+            {
+                /* só entra aqui se NÃO removemos o topo */
+                if (cor(raiz->dir) == PRETO &&
+                    (raiz->dir == NULL || cor(raiz->dir->esq) == PRETO))
+                {
+                    raiz = move2DirRed(raiz);
+                }
+
+                if (cmp == 0)
+                {
+                    Artista *menor = procuraMenor(raiz->dir);
+                    raiz->info = menor->info;
+                    raiz->dir = removeMenor(raiz->dir);
+                } 
+                else 
+                {
+                    raiz->dir = removeNo(raiz->dir, nomeArtista);
+                }
+
+                resultado = raiz;
+            }
+        }
+
+        if (resultado != NULL)
+        {
+            balanceamento(&resultado);
+        }
+    }
+
+    return resultado;
+}
+
+
 int main(void)
 {
     Artista *raiz = NULL;
@@ -274,20 +395,70 @@ int main(void)
     infoArtista b = {"Ana",   "Pop",  "Banda",2};
     infoArtista c = {"Zeca",  "Samba","Solo", 7};
     infoArtista d = {"Beto",  "Rock", "Solo", 1};
+    infoArtista e = {"Lia",   "Indie","Solo", 3};
+    infoArtista f = {"Rafa",  "Jazz", "Banda",4};
 
+    // Inserções
     insercao(&raiz, alocaArtista(a));
     insercao(&raiz, alocaArtista(b));
     insercao(&raiz, alocaArtista(c));
     insercao(&raiz, alocaArtista(d));
+    insercao(&raiz, alocaArtista(e));
+    insercao(&raiz, alocaArtista(f));
 
-    printf("Lista em pre-ordem:\n");
+    printf(">>> Pre-ordem (inicial):\n");
     mostrarArtistasPreOrdem(raiz);
 
+    // Busca simples
     Artista *encontrado = buscarArtista(raiz, "Ana");
-    if (encontrado) printf("Achei %s\n", encontrado->info.nome);
+    if (encontrado) printf("Achei %s\n\n", encontrado->info.nome);
+
+    // 1) Remover folha (escolha provável após balanceamentos)
+    printf(">>> Removendo 'Rafa' (folha?):\n");
+    if (removeArtista(&raiz, "Rafa"))
+        mostrarArtistasPreOrdem(raiz);
+    else
+        printf("Nao removido (nao encontrado)\n");
+    printf("\n");
+
+    // 2) Remover nó com 1 filho (depende do estado após rotações)
+    printf(">>> Removendo 'Beto' (possivel 1 filho):\n");
+    if (removeArtista(&raiz, "Beto"))
+        mostrarArtistasPreOrdem(raiz);
+    else
+        printf("Nao removido (nao encontrado)\n");
+    printf("\n");
+
+    // 3) Remover nó com 2 filhos (geralmente 'Chico' ou 'Zeca' acabam com 2)
+    printf(">>> Removendo 'Chico' (2 filhos?):\n");
+    if (removeArtista(&raiz, "Chico"))
+        mostrarArtistasPreOrdem(raiz);
+    else
+        printf("Nao removido (nao encontrado)\n");
+    printf("\n");
+
+    // 4) Remover a raiz atual (qualquer que seja após balanceamentos)
+    if (raiz) {
+        char raizNome[50];
+        strncpy(raizNome, raiz->info.nome, sizeof(raizNome));
+        raizNome[sizeof(raizNome)-1] = '\0';
+
+        printf(">>> Removendo a raiz atual ('%s'):\n", raizNome);
+        if (removeArtista(&raiz, raizNome))
+            mostrarArtistasPreOrdem(raiz);
+        else
+            printf("Nao removido (nao encontrado)\n");
+        printf("\n");
+    }
+
+    // 5) Tentar remover um nome inexistente
+    printf(">>> Removendo 'NaoExiste':\n");
+    if (removeArtista(&raiz, "NaoExiste"))
+        mostrarArtistasPreOrdem(raiz);
+    else
+        printf("Nao removido (nao encontrado)\n");
+    printf("\n");
 
     liberarArvore(raiz);
     return 0;
 }
-
-*/

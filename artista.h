@@ -22,8 +22,8 @@ typedef struct Artista {
 
 
 int cor (Artista *raiz);
-void rotacionaEsq(Artista **raiz);
-void rotacionaDir(Artista **raiz);
+Artista *rotacionaEsq(Artista *raiz);
+Artista *rotacionaDir(Artista *raiz);
 void trocaCor(Artista *raiz);
 void balanceamento(Artista **raiz);
 
@@ -35,5 +35,12 @@ Artista *buscarArtista(Artista *raiz, const char *nome);
 void mostrarArtistas(Artista *raiz);
 void mostrarArtistasPreOrdem(Artista *raiz);
 void liberarArvore(Artista *raiz);
+
+Artista* move2EsqRed(Artista *raiz);
+Artista* move2DirRed(Artista *raiz);
+Artista *removeMenor(Artista *raiz);
+Artista *procuraMenor(Artista *raiz);
+int removeArtista(Artista **raiz, const char *nomeArtista) ;
+Artista* removeNo(Artista *raiz, const char *nomeArtista) ;
 
 #endif 

@@ -193,7 +193,7 @@ Album* BuscarNoPorTitulo(Album *raiz, const char* tituloBusca)
 
 Album *move2EsqRed(Album *raiz)
 {
-    Album *ret = raiz;
+    Album *retorna = raiz;
     trocaCor(raiz);
 
     if (raiz != NULL && raiz->dir != NULL)
@@ -203,17 +203,17 @@ Album *move2EsqRed(Album *raiz)
             if (cor(raiz->dir->esq) == VERMELHO)
             {
                 raiz->dir = rotacionaDir(raiz->dir);
-                ret = rotacionaEsq(raiz);
-                trocaCor(ret);
+                retorna = rotacionaEsq(raiz);
+                trocaCor(retorna);
             }
         }
     }
-    return ret;
+    return retorna;
 }
 
 Album *move2DirRed(Album *raiz)
 {
-    Album *ret = raiz;
+    Album *retorna = raiz;
     trocaCor(raiz);
 
     if (raiz != NULL && raiz->esq != NULL)
@@ -222,12 +222,12 @@ Album *move2DirRed(Album *raiz)
         {
             if (cor(raiz->esq->esq) == VERMELHO)
             {
-                ret = rotacionaDir(raiz);
-                trocaCor(ret);
+                retorna = rotacionaDir(raiz);
+                trocaCor(retorna);
             }
         }
     }
-    return ret;
+    return retorna;
 }
 
 
@@ -290,6 +290,7 @@ int removeAlbum(Album **raiz, const char *titulo)
     }
     return removeu;
 }
+
 
 Album* removeNo(Album *raiz, const char *titulo) 
 {
