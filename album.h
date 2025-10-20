@@ -38,7 +38,7 @@ Album *move2EsqRed(Album *raiz);
 Album *move2DirRed(Album *raiz);
 Album *removeMenor(Album *raiz);
 Album *procuraMenor(Album *raiz);
-int removeAlbum(Album **raiz, char titulo) ;
+int removeAlbum(Album **raiz, const char *titulo);
 Album* removeNo(Album *raiz, const char *titulo) ;
 void liberarArvore(Album *raiz);
 
