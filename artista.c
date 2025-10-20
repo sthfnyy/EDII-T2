@@ -205,6 +205,64 @@ void liberarArvore(Artista *raiz)
 }
 
 
+//remoção da árvore rubro-negra de artistas
+Artista* move2EsqRed(Artista *raiz)
+{
+    trocaCor(raiz);
+    if (raiz->dir != NULL && cor((raiz)->dir->esq)== VERMELHO)
+    {
+        rotacionaDir(&(raiz->dir));
+        rotacionaEsq(&raiz);
+        trocaCor(raiz);
+    }
+}
+
+Artista* move2DirRed(Artista *raiz)
+{
+    trocaCor(raiz);
+    if (cor((raiz)->esq->esq) == VERMELHO)
+    {
+        rotacionaDir(&raiz);
+        trocaCor(raiz);
+    }
+    return raiz;
+}
+
+
+Artista *removeMenor(Artista *raiz)
+{
+    Artista *resultado = raiz;  // valor a devolver (um único return no fim)
+
+    if (raiz != NULL)
+    {
+        // caso base: este nó é o menor (não tem filho à esquerda)
+        if (raiz->esq == NULL)
+        {
+            free(raiz);
+            resultado = NULL;             // sem return no meio
+        }
+        else
+        {
+            // se caminho à esquerda está "preto-preto", puxa vermelho para a esquerda
+            Artista *esq = raiz->esq;
+            Artista *esqEsq = NULL;
+            if (esq != NULL)
+                esqEsq = esq->esq;
+
+            if (cor(esq) == PRETO && cor(esqEsq) == PRETO)
+                raiz = move2EsqRed(raiz);
+
+            // desce pela esquerda e atualiza o ponteiro
+            raiz->esq = removeMenor(raiz->esq);
+
+            // após a remoção no filho, este nó continua sendo o topo da subárvore
+            resultado = raiz;
+        }
+    }
+
+    return resultado;  
+}
+
 /* ======== Teste rápido ======== */
 
 /*

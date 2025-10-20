@@ -90,18 +90,26 @@ void balanceamento(Album **raiz)
     if (cor((*raiz)->esq) == PRETO && cor((*raiz)->dir) == VERMELHO)
     {
         *raiz = rotacionaEsq(*raiz);
-    } 
+    }
 
-    if ((cor((*raiz)->esq) == VERMELHO) && (cor((*raiz)->esq->esq) == VERMELHO))
+    /* --- PROTEÇÃO AQUI --- */
+    if ((*raiz)->esq != NULL)
     {
-        *raiz = rotacionaDir(*raiz);
-    } 
+        if (cor((*raiz)->esq) == VERMELHO &&
+            (*raiz)->esq->esq != NULL &&
+            cor((*raiz)->esq->esq) == VERMELHO)
+        {
+            *raiz = rotacionaDir(*raiz);
+        }
+    }
 
     if (cor((*raiz)->esq) == VERMELHO && cor((*raiz)->dir) == VERMELHO)
     {
-        trocaCor(*raiz); 
-    } 
+        trocaCor(*raiz);
+    }
+    
 }
+
 
 int insereNo(Album **raiz, Album *novoNo)
 {
@@ -183,44 +191,80 @@ Album* BuscarNoPorTitulo(Album *raiz, const char* tituloBusca)
     return noEncontrado;
 }
 
-
 Album *move2EsqRed(Album *raiz)
 {
+    Album *ret = raiz;
     trocaCor(raiz);
-    if (cor((raiz)->dir->esq) == VERMELHO)
+
+    if (raiz != NULL && raiz->dir != NULL)
     {
-        raiz->dir = rotacionaDir(raiz->dir);
-        raiz = rotacionaEsq(raiz);
-        trocaCor(raiz);
+        if (raiz->dir->esq != NULL)
+        {
+            if (cor(raiz->dir->esq) == VERMELHO)
+            {
+                raiz->dir = rotacionaDir(raiz->dir);
+                ret = rotacionaEsq(raiz);
+                trocaCor(ret);
+            }
+        }
     }
-    return raiz;
+    return ret;
 }
 
 Album *move2DirRed(Album *raiz)
 {
+    Album *ret = raiz;
     trocaCor(raiz);
-    if (cor((raiz)->esq->esq) == VERMELHO)
+
+    if (raiz != NULL && raiz->esq != NULL)
     {
-        raiz = rotacionaDir(raiz);
-        trocaCor(raiz);
+        if (raiz->esq->esq != NULL)
+        {
+            if (cor(raiz->esq->esq) == VERMELHO)
+            {
+                ret = rotacionaDir(raiz);
+                trocaCor(ret);
+            }
+        }
     }
-    return raiz;
+    return ret;
 }
+
 
 Album *removeMenor(Album *raiz)
 {
-    if ((*raiz).esq == NULL)
+    Album *resultado = raiz;  // valor a devolver (um único return no fim)
+
+    if (raiz != NULL)
     {
-        free(raiz);
-        return NULL;
+        // caso base: este nó é o menor (não tem filho à esquerda)
+        if (raiz->esq == NULL)
+        {
+            free(raiz);
+            resultado = NULL;             
+        }
+        else
+        {
+            // se caminho à esquerda está "preto-preto", puxa vermelho para a esquerda
+            Album *esq = raiz->esq;
+            Album *esqEsq = NULL;
+            if (esq != NULL)
+                esqEsq = esq->esq;
+
+            if (cor(esq) == PRETO && cor(esqEsq) == PRETO)
+                raiz = move2EsqRed(raiz);
+
+            // desce pela esquerda e atualiza o ponteiro
+            raiz->esq = removeMenor(raiz->esq);
+
+            // após a remoção no filho, este nó continua sendo o topo da subárvore
+            resultado = raiz;
+        }
     }
 
-    if (cor(raiz->esq) == PRETO && cor(raiz->esq->esq) == PRETO)
-        raiz = move2EsqRed(raiz);
-
-    raiz->esq = removeMenor(raiz->esq);
-    return (raiz);
+    return resultado;  
 }
+
 
 Album *procuraMenor(Album *raiz)
 {
@@ -257,48 +301,65 @@ Album* removeNo(Album *raiz, const char *titulo)
 
         if (cmp < 0) 
         {
-            if (cor((raiz)->esq) == PRETO && cor((raiz)->esq->esq) == PRETO) 
-            
-                raiz = move2EsqRed(raiz);
-            
+            if (raiz->esq != NULL)
+            {
+                if (cor(raiz->esq) == PRETO &&
+                    (raiz->esq->esq == NULL || cor(raiz->esq->esq) == PRETO))
+                {
+                    raiz = move2EsqRed(raiz);
+                }
+            }
+
             raiz->esq = removeNo(raiz->esq, titulo);
-            resultado = raiz; // ainda temos nó no topo desta subárvore
+            resultado = raiz;
         }
         else 
         {
-            if (cor((raiz)->esq) == VERMELHO) 
+            if (cor(raiz->esq) == VERMELHO)
             {
                 raiz = rotacionaDir(raiz);
             }
 
-            if (cmp == 0 && (raiz->dir) == NULL) 
+            /* --- REESTRUTURAÇÃO AQUI --- */
+            if (cmp == 0 && raiz->dir == NULL)
             {
+                /* caso base: achou e não tem filho direito → remove e encerra este ramo */
                 free(raiz);
-                resultado =  NULL; //tirar esse return daqui
+                resultado = NULL;
             }
-
-            if (cor(raiz->dir) == PRETO && cor(raiz->dir->esq) == PRETO)
+            else
             {
-                raiz = move2DirRed(raiz);
-            } 
+                /* só entra aqui se NÃO removemos o topo */
+                if (cor(raiz->dir) == PRETO &&
+                    (raiz->dir == NULL || cor(raiz->dir->esq) == PRETO))
+                {
+                    raiz = move2DirRed(raiz);
+                }
 
-            if (cmp == 0) 
-            {
-                Album *menor = procuraMenor(raiz->dir);
-                raiz->info = menor->info;
-                raiz->dir = removeMenor(raiz->dir);
-            } 
-            else{ 
-                raiz->dir = removeNo(raiz->dir, titulo);
+                if (cmp == 0)
+                {
+                    Album *menor = procuraMenor(raiz->dir);
+                    raiz->info = menor->info;
+                    raiz->dir = removeMenor(raiz->dir);
+                } 
+                else 
+                {
+                    raiz->dir = removeNo(raiz->dir, titulo);
+                }
+
+                resultado = raiz;
             }
-            resultado = raiz;  // seguimos com a subárvore atualizada
         }
-        if (resultado != NULL) {
-            balanceamento(&resultado);   
-        }          
+
+        if (resultado != NULL)
+        {
+            balanceamento(&resultado);
+        }
     }
-    return resultado;  
+
+    return resultado;
 }
+
 
 
 
