@@ -25,8 +25,8 @@ typedef struct Album {
 Album *criarNo(infoAlbum album);
 infoAlbum preencherAlbum(void);
 int cor(Album *raiz);
-void rotacionaEsq(Album **raiz);
-void rotacionaDir(Album **raiz);    
+Album *rotacionaEsq(Album *raiz);
+Album *rotacionaDir(Album *raiz);  
 void trocaCor(Album *raiz) ;
 void balanceamento(Album **raiz);
 int  insercao(Album **raiz, Album *novoNo) ;
@@ -38,7 +38,8 @@ Album *move2EsqRed(Album *raiz);
 Album *move2DirRed(Album *raiz);
 Album *removeMenor(Album *raiz);
 Album *procuraMenor(Album *raiz);
-Album* removeNo(Album *raiz, char valor);
+int removeAlbum(Album **raiz, char titulo) ;
+Album* removeNo(Album *raiz, const char *titulo) ;
 void liberarArvore(Album *raiz);
 
 

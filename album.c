@@ -53,26 +53,27 @@ int cor(Album *raiz)
     return corNo;
 }
 
-void rotacionaEsq(Album **raiz)
+//tive que modificar e tirar do tipo void, pois na remoção não dava pra usar void
+Album *rotacionaEsq(Album *raiz)
 {
-    Album *aux = (*raiz)->dir;
+    Album *aux = (raiz)->dir;
 
-    (*raiz)->dir = aux->esq;
-    aux->esq = (*raiz);
-    aux->cor = (*raiz)->cor;
-    (*raiz)->cor = VERMELHO;
-    (*raiz) = aux;
+    raiz->dir = aux->esq;
+    aux->esq = raiz;
+    aux->cor = raiz->cor;
+    raiz->cor = VERMELHO;
+    return aux;
 }
 
-void rotacionaDir(Album **raiz)
+Album *rotacionaDir(Album *raiz)
 {
-    Album *aux = (*raiz)->esq;
+    Album *aux = raiz->esq;
 
-    (*raiz)->esq = aux->dir;
-    aux->dir = (*raiz);
-    aux->cor = (*raiz)->cor;
-    (*raiz)->cor = VERMELHO;
-    (*raiz) = aux;
+    raiz->esq = aux->dir;
+    aux->dir = raiz;
+    aux->cor = raiz->cor;
+    raiz->cor = VERMELHO;
+    return aux;
 }
 
 void trocaCor(Album *raiz) 
@@ -232,57 +233,73 @@ Album *procuraMenor(Album *raiz)
     return aux;
 }
 
-Album* removeNo(Album *raiz, char titulo) 
+int removeAlbum(Album **raiz, char titulo) 
 {
-    if(raiz == NULL) 
-        return NULL;
+    int removeu = 0;
+    if (BuscarNoPorTitulo (*raiz, titulo)) 
+    {
+        Album *no = *raiz;
+        *raiz = removeNo(*raiz, titulo);
+        if (*raiz != NULL) 
+            (*raiz)->cor = PRETO;
+        removeu = 1;
+    }
+    return removeu;
+}
 
-    else{
+Album* removeNo(Album *raiz, const char *titulo) 
+{
+    Album *resultado = raiz;
+
+    if (raiz != NULL)
+    {    
         int cmp = strcmp(titulo, raiz->info.titulo);
 
-        if (cmp < (*raiz).info.titulo) 
+        if (cmp < 0) 
         {
-            if (cor((*raiz).esq) == PRETO && cor((*raiz).esq->esq) == PRETO) 
-            {
+            if (cor((raiz)->esq) == PRETO && cor((raiz)->esq->esq) == PRETO) 
+            
                 raiz = move2EsqRed(raiz);
-            }
-            (*raiz).esq = removeNo((*raiz).esq, titulo);
-
-        } 
+            
+            raiz->esq = removeNo(raiz->esq, titulo);
+            resultado = raiz; // ainda temos nó no topo desta subárvore
+        }
         else 
         {
-            if (cor((*raiz).esq) == VERMELHO) 
+            if (cor((raiz)->esq) == VERMELHO) 
             {
-                rotacionaDir(&raiz);
+                raiz = rotacionaDir(raiz);
             }
 
-            if (titulo == (*raiz).info.titulo && ((*raiz).dir) == NULL) 
+            if (cmp == 0 && (raiz->dir) == NULL) 
             {
                 free(raiz);
-                return NULL;
+                resultado =  NULL; //tirar esse return daqui
             }
 
-            if (cor((*raiz).dir) == PRETO && cor((*raiz).dir->esq) == PRETO)
+            if (cor(raiz->dir) == PRETO && cor(raiz->dir->esq) == PRETO)
             {
                 raiz = move2DirRed(raiz);
             } 
 
-            if (titulo == (*raiz).info.titulo) 
+            if (cmp == 0) 
             {
-                Album *menor = procuraMenor((*raiz).dir);
-                (*raiz).info = (*menor).info;
-                (*raiz).dir = removeMenor((*raiz).dir);
+                Album *menor = procuraMenor(raiz->dir);
+                raiz->info = menor->info;
+                raiz->dir = removeMenor(raiz->dir);
             } 
-            else 
-                (raiz)->dir = removeNo((*raiz).dir, titulo);
+            else{ 
+                raiz->dir = removeNo(raiz->dir, titulo);
+            }
+            resultado = raiz;  // seguimos com a subárvore atualizada
         }
-
-        balanceamento(&raiz);
+        if (resultado != NULL) {
+            balanceamento(&raiz);   
+        }          
     }
+    return resultado;  
+}
 
-
-    return raiz;
-} 
 
 
 // Impressão pre-order
@@ -330,8 +347,8 @@ int main(void)
     printf("Lista em pre-ordem:\n");
     mostrarAlbumPreOrdem(raiz);
 
-    //Album *encontrado = buscarAlbum(raiz, "Ana");
-    //if (encontrado) printf("Achei %s\n", encontrado->info.titulo);
+    Album *encontrado = BuscarNoPorTitulo(raiz, "Chuva");
+    if (encontrado) printf("Achei %s\n", encontrado->info.titulo);
 
     liberarArvore(raiz);
     return 0;
