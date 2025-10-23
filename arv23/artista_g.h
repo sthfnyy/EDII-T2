@@ -20,14 +20,23 @@ typedef struct Artista {
 
 
 //funções
-Artista *alocaArtista (infoArtista dados, Artista *fEsq, Artista *fCen);
+Artista *alocaArtista(infoArtista dados);
 infoArtista preencherArtista(void);
-void imprimirArv(Artista *raiz, int nivel) ;
-void liberarArv(Artista **raiz);
 void inserir23(Artista **novoNo, infoArtista dado, Artista *subArvInfo) ;
 Artista *quebrarNoArtista(Artista **no, infoArtista dado, infoArtista *sobe, Artista *filhoDir) ;
 Artista *inserirArtista(Artista **raiz, Artista *pai, infoArtista dado, infoArtista *sobe);
-int verificaDados(Artista *raiz, const char *nome) ;
+void imprimirArtistasInOrdem(Artista *raiz) ;
+Artista *buscarArtista(Artista *raiz, const char *nome);
+void imprimirInOrdemArtistaComRaiz(Artista *raiz) ;
+void liberarArtistas(Artista *raiz) ;
 
+//=====FUNÇÃO QUE TO USANDO PARA REMOÇÃO =====//
+Artista* removerArtista(Artista* raiz, const char* nome, int* diminuiu);
+infoArtista obterPredecessorArtista(Artista* no);
+void fundir(Artista *pai, int caso);
+void redistribuiDaDireita(Artista *pai, int caso);
+void redistribuiDaEsquerda(Artista *pai, int caso);
+int ehFolha(Artista *no);
+int verificarValidadeArvore(Artista* no, int nivel) ;
 
 #endif 

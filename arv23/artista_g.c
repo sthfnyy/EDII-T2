@@ -1,22 +1,22 @@
-//VERSÃO OFICIAL
-
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
-#include "artista.h"
+#include "artista_g.h"
 
-
-Artista *alocaArtista (infoArtista dados, Artista *fEsq, Artista *fCen)
+// Aloca e inicializa um nó 2–3 com 1 informação (infoUm = dados),
+// sem filhos (esq/cen/dir = NULL) e Ninfos = 1.
+Artista *alocaArtista(infoArtista dados)
 {
-    Artista *novo = (Artista *) malloc (sizeof(Artista));
-    if (novo != NULL){
-        novo->infoUm = dados;
-        novo->Ninfos = 1;
-        novo->esq = fEsq;
-        novo->cen = fCen;
-        novo->dir = NULL;
+    Artista *novoNo = (Artista *) malloc(sizeof(Artista)); // aloca memória
+    if (novoNo != NULL)
+    {
+        novoNo->infoUm = dados;  // coloca a info no primeiro slot
+        novoNo->Ninfos = 1;      // nó começa com 1 informação
+        novoNo->esq = NULL;      // sem filhos
+        novoNo->cen = NULL; 
+        novoNo->dir = NULL;
     }
-    return novo;
+    return novoNo; // devolve o ponteiro (ou NULL se malloc falhou)
 }
 
 // Lê do teclado os campos de infoArtista e inicializa numAlbuns
@@ -30,47 +30,9 @@ infoArtista preencherArtista(void)
     return dados;
 }
 
-void imprimirArv(Artista *raiz, int nivel) 
-{
-    if (raiz != NULL)
-    {
-        // imprime da direita pra esquerda (como uma árvore "virada")
-        imprimirArv(raiz->dir, nivel + 1);
-
-        for (int i = 0; i < nivel; i++)
-        {
-            printf("   "); // espaçamento visual 
-        }
-
-        if (raiz->Ninfos == 1)
-        {
-            printf("[%s]\n", raiz->infoUm.nome);
-        }
-        else
-        {
-            printf("[%s|%s]\n", raiz->infoUm.nome, raiz->infoDois.nome);
-        }
-
-        imprimirArv(raiz->cen, nivel + 1);
-        imprimirArv(raiz->esq, nivel + 1);
-    }
-}
-
-void liberarArv(Artista **raiz)
-{
-    if (*raiz) 
-    {
-        liberarArv(&((*raiz)->esq));
-        liberarArv(&((*raiz)->cen));
-        if ((*raiz)->Ninfos == 2)
-        {
-            liberarArv(&((*raiz)->dir));
-        }
-        free(*raiz);
-        *raiz = NULL;
-    }
-}
-
+// Insere 'dado' em um nó que tem APENAS 1 informação (Ninfos == 1),
+// ajustando a posição (infoUm/infoDois) e a ligação dos filhos.
+// 'subArvInfo' é o filho direito associado ao elemento que está sendo inserido/promovido.
 void inserir23(Artista **novoNo, infoArtista dado, Artista *subArvInfo) 
 {
     int cmp = strcmp(dado.nome, (*novoNo)->infoUm.nome); // compara nomes para ordenar
@@ -108,21 +70,31 @@ Artista *quebrarNoArtista(Artista **no, infoArtista dado, infoArtista *sobe, Art
     if (cmp2 > 0) {
         // caso 1: dado é o MAIOR dos três, (sobe : infoDois)
         *sobe = (*no)->infoDois;        // sobe a info do meio (aqui o meio é infoDois antigo)
-        maior = alocaArtista(dado, (*no)->dir, filhoDir);     // novo nó da direita fica com 'dado' (maior)
+        maior = alocaArtista(dado);     // novo nó da direita fica com 'dado' (maior)
+        // filhos do novo nó: esq recebe o antigo dir do nó quebrado; cen recebe filhoDir (que veio da recursão)
+        maior->esq = (*no)->dir;
+        maior->cen = filhoDir;
         // nó original reduz para ficar só com infoUm (menor)
         (*no)->Ninfos = 1;
         (*no)->dir = NULL; // opcional: por higiene, já que o nó volta a ter só esq/cen
     } else if (cmp1 > 0) {
         // caso 2: dado fica no MEIO
         *sobe = dado;                   // o próprio 'dado' sobe
-        maior = alocaArtista((*no)->infoDois, filhoDir, (*no)->dir); // novo nó da direita recebe a maior info antiga
+        maior = alocaArtista((*no)->infoDois); // novo nó da direita recebe a maior info antiga
+        // o filho esquerdo do novo nó é 'filhoDir' (direito do promovido),
+        // e o filho central é o antigo 'dir' do nó quebrado
+        maior->esq = filhoDir;
+        maior->cen = (*no)->dir;
         // nó original permanece com infoUm (menor)
         (*no)->Ninfos = 1;
         (*no)->dir = NULL; // por higiene
     } else {
         // caso 3: dado é o MENOR dos três
         *sobe = (*no)->infoUm;            // sobe a menor info antiga (que vira a do meio global)
-        maior = alocaArtista((*no)->infoDois, (*no)->cen, (*no)->dir); // novo nó da direita recebe a maior info antiga
+        maior = alocaArtista((*no)->infoDois); // novo nó da direita recebe a maior info antiga
+        // filhos do novo nó da direita: herdará os dois filhos mais à direita do nó original
+        maior->esq = (*no)->cen;
+        maior->cen = (*no)->dir;
         // no nó original, substitui infoUm por 'dado' (agora o menor),
         // e o filho do meio vira 'filhoDir' (direito do promovido)
         (*no)->infoUm = dado;
@@ -150,7 +122,7 @@ Artista *inserirArtista(Artista **raiz, Artista *pai, infoArtista dado, infoArti
     if (*raiz == NULL) 
     {
         // caso base: subárvore vazia -> cria nó folha com 'dado'
-        *raiz = alocaArtista(dado, NULL, NULL);
+        *raiz = alocaArtista(dado);
     } 
     else if ((*raiz)->esq == NULL) 
     {
@@ -162,20 +134,23 @@ Artista *inserirArtista(Artista **raiz, Artista *pai, infoArtista dado, infoArti
         } else {
             // folha cheia: precisa quebrar
             maiorNo = quebrarNoArtista(raiz, dado, sobe, NULL);
+
             if (pai == NULL) 
             {
-                *raiz = alocaArtista(*sobe, *raiz, maiorNo);
-                maiorNo = NULL; // encaixado, nada a propagar
+                // Quebra aconteceu na RAIZ: precisamos criar uma NOVA RAIZ.
+                Artista *aux = *raiz;             // guarda a raiz antiga (após 'quebrar', *raiz aponta para o nó esquerdo)
+                *raiz = alocaArtista(*sobe);       // nova raiz com a chave promovida
+                (*raiz)->esq = aux;                // filho esquerdo da nova raiz = raiz antiga (menor)
+                (*raiz)->cen = maiorNo;            // filho central = novo nó da direita (maior)
+                maiorNo = NULL;                    // já foi encaixado
             }
             // se não é raiz, devolvemos 'maiorNo' e '*sobe' para o pai lidar
         }
-    } else 
-    {
+    } else {
         // estamos em um NÓ INTERNO: decidir por qual filho descer
-        int cmp1 = strcmp(dado.nome, (*raiz)->infoUm.nome);
+        int cmp = strcmp(dado.nome, (*raiz)->infoUm.nome);
         int cmp2 = strcmp(dado.nome, (*raiz)->infoDois.nome);
-        if (cmp1 < 0) 
-        {
+        if (cmp < 0) {
             // desce para a esquerda
             maiorNo = inserirArtista(&(*raiz)->esq, *raiz, dado, sobe);
         } else if ((*raiz)->Ninfos == 1 || cmp2 < 0) {
@@ -185,6 +160,7 @@ Artista *inserirArtista(Artista **raiz, Artista *pai, infoArtista dado, infoArti
             // desce para a direita
             maiorNo = inserirArtista(&(*raiz)->dir, *raiz, dado, sobe);
         }
+
         // Ao voltar da recursão, pode ter vindo um split do filho (maiorNo != NULL)
         if (maiorNo != NULL) {
             if ((*raiz)->Ninfos == 1) {
@@ -197,8 +173,11 @@ Artista *inserirArtista(Artista **raiz, Artista *pai, infoArtista dado, infoArti
 
                 if (pai == NULL) {
                     // Quebra em RAIZ: criar nova raiz com a info promovida
-                    *raiz = alocaArtista(*sobe, *raiz, maiorNo);
-                    maiorNo = NULL; // já foi encaixado
+                    Artista *aux = *raiz;       // guarda o nó esquerdo pós-quebra
+                    *raiz = alocaArtista(*sobe);    // nova raiz com a promovida
+                    (*raiz)->esq = aux;         // filho esquerdo = nó esquerdo
+                    (*raiz)->cen = maiorNo;         // filho central = novo nó da direita
+                    maiorNo = NULL;                 // já foi encaixado
                 }
                 // Se não é raiz, devolvemos 'maiorNo' + '*sobe' para o pai
             }
@@ -207,43 +186,114 @@ Artista *inserirArtista(Artista **raiz, Artista *pai, infoArtista dado, infoArti
 
     return maiorNo; // se NULL, nada a propagar; se não, pai precisa encaixar
 }
-int verificaDados(Artista *raiz, const char *nome) 
+
+void imprimirArtistasInOrdem(Artista *raiz) 
 {
-    int existe = 0;
+    if (raiz != NULL) {
+        // Percorre a subárvore esquerda
+        imprimirArtistasInOrdem(raiz->esq);
+
+        // Imprime a primeira informação
+        printf("Nome: %s | Estilo: %s | Tipo: %s | Nº Albuns: %d\n",
+               raiz->infoUm.nome,
+               raiz->infoUm.estilo,
+               raiz->infoUm.tipo,
+               raiz->infoUm.numAlbuns);
+
+        // Percorre a subárvore central
+        imprimirArtistasInOrdem(raiz->cen);
+
+        // Se houver uma segunda informação, imprime-a
+        if (raiz->Ninfos == 2) {
+            printf("Nome: %s | Estilo: %s | Tipo: %s | Nº Albuns: %d\n",
+                   raiz->infoDois.nome,
+                   raiz->infoDois.estilo,
+                   raiz->infoDois.tipo,
+                   raiz->infoDois.numAlbuns);
+
+            // Percorre a subárvore direita
+            imprimirArtistasInOrdem(raiz->dir);
+        }
+    }
+}
+
+void imprimirInOrdemArtistaComRaiz(Artista *raiz) 
+{
+    printf("Valores em ordem: \n");
+    imprimirArtistasInOrdem(raiz);
+    printf("\n");
+
+    if (raiz) {
+        printf("Raiz: ");
+        if (raiz->Ninfos == 1)
+            printf("[%s]\n", raiz->infoUm.nome);
+        else
+            printf("[%s | %s]\n", raiz->infoUm.nome, raiz->infoDois.nome);
+    } else {
+        printf("Árvore vazia.\n");
+    }
+}
+
+Artista *buscarArtista(Artista *raiz, const char *nome)
+{
+    Artista *resultado = NULL; // ponteiro que será retornado no final
 
     if (raiz != NULL)
     {
         int cmp1 = strcmp(nome, raiz->infoUm.nome);
-        int cmp2 = strcmp(nome, raiz->infoDois.nome) ;
+        int cmp2 = 0; // só usamos se o nó tiver duas informações
 
-        if (cmp1 == 0 || (raiz->Ninfos == 2 && cmp2 == 0)) 
+        if (cmp1 == 0) {
+            // Encontrou na primeira informação
+            resultado = raiz;
+        }
+        else
         {
-            existe = 1; // encontrou o nome
-        } 
-        else if (cmp1 < 0)
-        {
-            existe = verificaDados(raiz->esq, nome);
-        } 
-        else if (raiz->Ninfos == 1 || cmp2 < 0) 
-        {
-            existe = verificaDados(raiz->cen, nome);
-        } 
-        else 
-        {
-            existe = verificaDados(raiz->dir, nome);
+            if (raiz->Ninfos == 2)
+                cmp2 = strcmp(nome, raiz->infoDois.nome);
+
+            if (raiz->Ninfos == 2 && cmp2 == 0) {
+                // Encontrou na segunda informação
+                resultado = raiz;
+            }
+            else if (cmp1 < 0) {
+                // Nome é menor que infoUm → vai pra esquerda
+                resultado = buscarArtista(raiz->esq, nome);
+            }
+            else if (raiz->Ninfos == 1 || (raiz->Ninfos == 2 && cmp2 < 0)) {
+                // Está entre infoUm e infoDois → vai pro centro
+                resultado = buscarArtista(raiz->cen, nome);
+            }
+            else {
+                // Nome é maior que infoDois → vai pra direita
+                resultado = buscarArtista(raiz->dir, nome);
+            }
         }
     }
 
-    return existe;
+    return resultado; // único ponto de retorno
 }
 
 
+void liberarArtistas(Artista *raiz) 
+{
+    if (raiz != NULL) {
+        // Libera as subárvores
+        liberarArtistas(raiz->esq);
+        liberarArtistas(raiz->cen);
+        liberarArtistas(raiz->dir);
+
+        // Libera o nó atual
+        free(raiz);
+    }
+}
+
+// ==== MAIN DE TESTE ====
 int main(void)
 {
     Artista *raiz = NULL;
-    infoArtista sobe;  // usado por inserirArtista
+    infoArtista sobe;  // usado pela inserirArtista
 
-    // Preenche com alguns artistas
     infoArtista a = {"Chico", "MPB",  "Solo", 5};
     infoArtista b = {"Ana",   "Pop",  "Banda",2};
     infoArtista c = {"Zeca",  "Samba","Solo", 7};
@@ -251,6 +301,7 @@ int main(void)
     infoArtista e = {"Lia",   "Indie","Solo", 3};
     infoArtista f = {"Rafa",  "Jazz", "Banda",4};
 
+    // Inserções (sem criar função nova)
     inserirArtista(&raiz, NULL, a, &sobe);
     inserirArtista(&raiz, NULL, b, &sobe);
     inserirArtista(&raiz, NULL, c, &sobe);
@@ -258,19 +309,25 @@ int main(void)
     inserirArtista(&raiz, NULL, e, &sobe);
     inserirArtista(&raiz, NULL, f, &sobe);
 
-    // Mostra a árvore “deitada”
-    printf(">>> Estrutura da arvore (direita -> esquerda):\n");
-    if (raiz) imprimirArv(raiz, 0); else puts("(arvore vazia)");
+    printf(">>> Em ordem com raiz:\n");
+    imprimirInOrdemArtistaComRaiz(raiz);   // já é sua função
 
-    // Testes de existencia (verificaDados)
-    const char *testes[] = {"Ana", "Zeca", "Xuxa", "Lia", "Beto"};
-    for (int i = 0; i < (int)(sizeof(testes)/sizeof(testes[0])); i++) {
-        printf("[VERIFICA] '%s': %s\n",
-               testes[i],
-               verificaDados(raiz, testes[i]) ? "existe" : "nao existe");
-    }
+    // Busca (usando sua função)
+    Artista *encontrado = buscarArtista(raiz, "Ana");
+    if (encontrado)
+        printf("\nAchei o artista: %s (%s)\n",
+               // atenção: pode estar em infoUm ou infoDois
+               (strcmp("Ana", encontrado->infoUm.nome) == 0) ? encontrado->infoUm.nome : encontrado->infoDois.nome,
+               (strcmp("Ana", encontrado->infoUm.nome) == 0) ? encontrado->infoUm.estilo : encontrado->infoDois.estilo);
+    else
+        printf("\nArtista não encontrado.\n");
 
-    // Libera memória usando a função que você tem
-    liberarArv(&raiz);
+    // Libera memória (sua função)
+    liberarArtistas(raiz);
+    raiz = NULL;
+
     return 0;
 }
+
+
+
