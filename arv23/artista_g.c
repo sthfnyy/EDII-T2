@@ -1,3 +1,5 @@
+//DESCONSIDERA ESSE CÓDIGO, É O PRIMEIRO QUE EU FIZ
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
