@@ -1,6 +1,9 @@
 #ifndef ARTISTA_H
 #define ARTISTA_H
 
+#include "album.h"
+#include "tipo.h"
+
 #define TAM_STRING 50
 
 typedef struct {
@@ -8,16 +11,15 @@ typedef struct {
     char estilo[TAM_STRING];
     char tipo[TAM_STRING];
     int  numAlbuns;
+    Album *albuns;  // árvore rubro-negra de álbuns
 } infoArtista;
 
-typedef enum { 
-    VERMELHO = 0, PRETO = 1 
-} Cor;
 
 typedef struct Artista {
     infoArtista info;
     struct Artista *esq, *dir, *pai;   
     Cor cor;
+
 } Artista;
 
 

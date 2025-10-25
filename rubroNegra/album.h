@@ -3,6 +3,7 @@
 #define ALBUM_H
 
 #include "tipo.h"
+#include "musica.h"
 
 #define TAM_STRING 50
 
@@ -11,6 +12,7 @@ typedef struct infoAlbum{
     int anoLancamento;
     int quantMusica;
     struct Musica *musica; 
+    
 } infoAlbum;
 
 typedef struct Album {
@@ -22,26 +24,25 @@ typedef struct Album {
 } Album;
 
 
-Album *criarNo(infoAlbum album);
+Album *criarNoAlbum(infoAlbum album);
 infoAlbum preencherAlbum(void);
-int cor(Album *raiz);
-Album *rotacionaEsq(Album *raiz);
-Album *rotacionaDir(Album *raiz);  
-void trocaCor(Album *raiz) ;
-void balanceamento(Album **raiz);
-int  insercao(Album **raiz, Album *novoNo) ;
-int insereNo(Album **raiz, Album *novoNo);
+int corAlbum(Album *raiz);
+Album *rotacionaEsqAlbum(Album *raiz);
+Album *rotacionaDirAlbum(Album *raiz);  
+void trocaCorAlbum(Album *raiz) ;
+void balanceamentoAlbum(Album **raiz);
+int  insercaoAlbum(Album **raiz, Album *novoNo) ;
+int insereNoAlbum(Album **raiz, Album *novoNo);
 void mostrarAlbumPreOrdem(Album *raiz);
 
-Album *BuscarNoPorTitulo(Album *raiz, const char* tituloBusca);
-Album *move2EsqRed(Album *raiz);
-Album *move2DirRed(Album *raiz);
-Album *removeMenor(Album *raiz);
-Album *procuraMenor(Album *raiz);
+Album *BuscarNoPorTituloAlbum(Album *raiz, const char* tituloBusca);
+Album *move2EsqRedAlbum(Album *raiz);
+Album *move2DirRedAlbum(Album *raiz);
+Album *removeMenorAlbum(Album *raiz);
+Album *procuraMenorAlbum(Album *raiz);
 int removeAlbum(Album **raiz, const char *titulo);
-Album* removeNo(Album *raiz, const char *titulo) ;
-void liberarArvore(Album *raiz);
-
+Album* removeNoAlbum(Album *raiz, const char *titulo) ;
+void liberarArvoreAlbum(Album *raiz);
 
 
 

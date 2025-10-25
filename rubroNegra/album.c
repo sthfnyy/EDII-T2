@@ -4,7 +4,7 @@
 #include "tipo.h"
 #include "album.h"
 
-Album *criarNo(infoAlbum album)
+Album *criarNoAlbum(infoAlbum album)
 {
     Album *novoNo = (Album*) malloc(sizeof(Album));
     if (novoNo != NULL)
@@ -31,18 +31,9 @@ infoAlbum preencherAlbum(void)
     return dados;
 }
 
-void liberarArvore(Album *raiz)
-{
-    if (raiz != NULL)
-    {
-        liberarArvore(raiz->esq);
-        liberarArvore(raiz->dir);
-        free(raiz);
-    }
-}
 
 // Essa funcao inicia faz com que os nos folhas seja pretos
-int cor(Album *raiz)
+int corAlbum(Album *raiz)
 {
     int corNo = PRETO;
     if (raiz)
@@ -54,7 +45,7 @@ int cor(Album *raiz)
 }
 
 //tive que modificar e tirar do tipo void, pois na remoção não dava pra usar void
-Album *rotacionaEsq(Album *raiz)
+Album *rotacionaEsqAlbum(Album *raiz)
 {
     Album *aux = (raiz)->dir;
 
@@ -65,7 +56,7 @@ Album *rotacionaEsq(Album *raiz)
     return aux;
 }
 
-Album *rotacionaDir(Album *raiz)
+Album *rotacionaDirAlbum(Album *raiz)
 {
     Album *aux = raiz->esq;
 
@@ -76,7 +67,7 @@ Album *rotacionaDir(Album *raiz)
     return aux;
 }
 
-void trocaCor(Album *raiz) 
+void trocaCorAlbum(Album *raiz) 
 {
     raiz->cor = !(raiz->cor); // troca a cor 
     if(raiz->esq != NULL)
@@ -85,33 +76,33 @@ void trocaCor(Album *raiz)
         raiz->dir->cor = !(raiz->dir->cor);
 }
 
-void balanceamento(Album **raiz) 
+void balanceamentoAlbum(Album **raiz) 
 {
-    if (cor((*raiz)->esq) == PRETO && cor((*raiz)->dir) == VERMELHO)
+    if (corAlbum((*raiz)->esq) == PRETO && corAlbum((*raiz)->dir) == VERMELHO)
     {
-        *raiz = rotacionaEsq(*raiz);
+        *raiz = rotacionaEsqAlbum(*raiz);
     }
 
     /* --- PROTEÇÃO AQUI --- */
     if ((*raiz)->esq != NULL)
     {
-        if (cor((*raiz)->esq) == VERMELHO &&
+        if (corAlbum((*raiz)->esq) == VERMELHO &&
             (*raiz)->esq->esq != NULL &&
-            cor((*raiz)->esq->esq) == VERMELHO)
+            corAlbum((*raiz)->esq->esq) == VERMELHO)
         {
-            *raiz = rotacionaDir(*raiz);
+            *raiz = rotacionaDirAlbum(*raiz);
         }
     }
 
-    if (cor((*raiz)->esq) == VERMELHO && cor((*raiz)->dir) == VERMELHO)
+    if (corAlbum((*raiz)->esq) == VERMELHO && corAlbum((*raiz)->dir) == VERMELHO)
     {
-        trocaCor(*raiz);
+        trocaCorAlbum(*raiz);
     }
     
 }
 
 
-int insereNo(Album **raiz, Album *novoNo)
+int insereNoAlbum(Album **raiz, Album *novoNo)
 {
     int inseriu = 1;
 
@@ -123,11 +114,11 @@ int insereNo(Album **raiz, Album *novoNo)
 
         if (cmp < 0)
         {
-            inseriu = insereNo(&((*raiz)->esq), novoNo);
+            inseriu = insereNoAlbum(&((*raiz)->esq), novoNo);
         }
         else if (cmp > 0)
         {
-            inseriu = insereNo(&((*raiz)->dir), novoNo);
+            inseriu = insereNoAlbum(&((*raiz)->dir), novoNo);
         }
         else
         {
@@ -136,15 +127,15 @@ int insereNo(Album **raiz, Album *novoNo)
             
         if (*raiz && inseriu)
         {
-            balanceamento(raiz);
+            balanceamentoAlbum(raiz);
         }
     }    
     return inseriu;
 }
 
-int  insercao(Album **raiz, Album *novoNo) 
+int  insercaoAlbum(Album **raiz, Album *novoNo) 
 {
-    int inseriu = insereNo(raiz, novoNo);
+    int inseriu = insereNoAlbum(raiz, novoNo);
 
     if (inseriu && *raiz) 
         (*raiz)->cor = PRETO;
@@ -153,7 +144,7 @@ int  insercao(Album **raiz, Album *novoNo)
 }
 
 
-Album* BuscarNoPorTitulo(Album *raiz, const char* tituloBusca)
+Album* BuscarNoPorTituloAlbum(Album *raiz, const char* tituloBusca)
 {
     // 1. Cria um ponteiro para o nó que será retornado. Inicia com NULL.
     Album *noEncontrado = NULL;
@@ -191,82 +182,78 @@ Album* BuscarNoPorTitulo(Album *raiz, const char* tituloBusca)
     return noEncontrado;
 }
 
-Album *move2EsqRed(Album *raiz)
+Album *move2EsqRedAlbum(Album *raiz)
 {
     Album *retorna = raiz;
-    trocaCor(raiz);
+    trocaCorAlbum(raiz);
 
     if (raiz != NULL && raiz->dir != NULL)
     {
         if (raiz->dir->esq != NULL)
         {
-            if (cor(raiz->dir->esq) == VERMELHO)
+            if (corAlbum(raiz->dir->esq) == VERMELHO)
             {
-                raiz->dir = rotacionaDir(raiz->dir);
-                retorna = rotacionaEsq(raiz);
-                trocaCor(retorna);
+                raiz->dir = rotacionaDirAlbum(raiz->dir);
+                retorna = rotacionaEsqAlbum(raiz);
+                trocaCorAlbum(retorna);
             }
         }
     }
     return retorna;
 }
 
-Album *move2DirRed(Album *raiz)
+Album *move2DirRedAlbum(Album *raiz)
 {
     Album *retorna = raiz;
-    trocaCor(raiz);
+    trocaCorAlbum(raiz);
 
     if (raiz != NULL && raiz->esq != NULL)
     {
         if (raiz->esq->esq != NULL)
         {
-            if (cor(raiz->esq->esq) == VERMELHO)
+            if (corAlbum(raiz->esq->esq) == VERMELHO)
             {
-                retorna = rotacionaDir(raiz);
-                trocaCor(retorna);
+                retorna = rotacionaDirAlbum(raiz);
+                trocaCorAlbum(retorna);
             }
         }
     }
     return retorna;
 }
 
-
-Album *removeMenor(Album *raiz)
+Album *removeMenorAlbum(Album *raiz)
 {
-    Album *resultado = raiz;  // valor a devolver (um único return no fim)
+    Album *resultado = raiz;
 
     if (raiz != NULL)
     {
-        // caso base: este nó é o menor (não tem filho à esquerda)
         if (raiz->esq == NULL)
         {
+            // libera músicas do álbum que será destruído
+            liberarListaMusicas(raiz->info.musica);
+            raiz->info.musica = NULL;
+
             free(raiz);
-            resultado = NULL;             
+            resultado = NULL;
         }
         else
         {
-            // se caminho à esquerda está "preto-preto", puxa vermelho para a esquerda
             Album *esq = raiz->esq;
-            Album *esqEsq = NULL;
-            if (esq != NULL)
-                esqEsq = esq->esq;
+            Album *esqEsq = esq ? esq->esq : NULL;
 
-            if (cor(esq) == PRETO && cor(esqEsq) == PRETO)
-                raiz = move2EsqRed(raiz);
+            if (corAlbum(esq) == PRETO && corAlbum(esqEsq) == PRETO)
+                raiz = move2EsqRedAlbum(raiz);
 
-            // desce pela esquerda e atualiza o ponteiro
-            raiz->esq = removeMenor(raiz->esq);
-
-            // após a remoção no filho, este nó continua sendo o topo da subárvore
+            raiz->esq = removeMenorAlbum(raiz->esq);
             resultado = raiz;
         }
     }
-
-    return resultado;  
+    return resultado;
 }
 
 
-Album *procuraMenor(Album *raiz)
+
+Album *procuraMenorAlbum(Album *raiz)
 {
     Album *aux = raiz;
 
@@ -280,10 +267,10 @@ Album *procuraMenor(Album *raiz)
 int removeAlbum(Album **raiz, const char *titulo) 
 {
     int removeu = 0;
-    if (BuscarNoPorTitulo (*raiz, titulo)) 
+    if (BuscarNoPorTituloAlbum (*raiz, titulo)) 
     {
         Album *no = *raiz;
-        *raiz = removeNo(*raiz, titulo);
+        *raiz = removeNoAlbum(*raiz, titulo);
         if (*raiz != NULL) 
             (*raiz)->cor = PRETO;
         removeu = 1;
@@ -291,77 +278,75 @@ int removeAlbum(Album **raiz, const char *titulo)
     return removeu;
 }
 
-
-Album* removeNo(Album *raiz, const char *titulo) 
+Album* removeNoAlbum(Album *raiz, const char *titulo) 
 {
     Album *resultado = raiz;
 
     if (raiz != NULL)
-    {    
+    {
         int cmp = strcmp(titulo, raiz->info.titulo);
 
-        if (cmp < 0) 
-        {
-            if (raiz->esq != NULL)
+        if (cmp < 0) {
+            if (raiz->esq && corAlbum(raiz->esq) == PRETO &&
+                (raiz->esq->esq == NULL || corAlbum(raiz->esq->esq) == PRETO))
             {
-                if (cor(raiz->esq) == PRETO &&
-                    (raiz->esq->esq == NULL || cor(raiz->esq->esq) == PRETO))
-                {
-                    raiz = move2EsqRed(raiz);
-                }
+                raiz = move2EsqRedAlbum(raiz);
             }
-
-            raiz->esq = removeNo(raiz->esq, titulo);
+            raiz->esq = removeNoAlbum(raiz->esq, titulo);
             resultado = raiz;
         }
-        else 
+        else
         {
-            if (cor(raiz->esq) == VERMELHO)
-            {
-                raiz = rotacionaDir(raiz);
-            }
+            if (corAlbum(raiz->esq) == VERMELHO)
+                raiz = rotacionaDirAlbum(raiz);
 
-            /* --- REESTRUTURAÇÃO AQUI --- */
             if (cmp == 0 && raiz->dir == NULL)
             {
-                /* caso base: achou e não tem filho direito → remove e encerra este ramo */
+                // liberar músicas deste álbum ANTES de destruir
+                liberarListaMusicas(raiz->info.musica);
+                raiz->info.musica = NULL;
+
                 free(raiz);
                 resultado = NULL;
             }
             else
             {
-                /* só entra aqui se NÃO removemos o topo */
-                if (cor(raiz->dir) == PRETO &&
-                    (raiz->dir == NULL || cor(raiz->dir->esq) == PRETO))
+                if (corAlbum(raiz->dir) == PRETO &&
+                    (raiz->dir == NULL || corAlbum(raiz->dir->esq) == PRETO))
                 {
-                    raiz = move2DirRed(raiz);
+                    raiz = move2DirRedAlbum(raiz);
                 }
 
                 if (cmp == 0)
                 {
-                    Album *menor = procuraMenor(raiz->dir);
-                    raiz->info = menor->info;
-                    raiz->dir = removeMenor(raiz->dir);
-                } 
-                else 
-                {
-                    raiz->dir = removeNo(raiz->dir, titulo);
-                }
+                    Album *menor = procuraMenorAlbum(raiz->dir);
 
+                    // 1) liberar músicas atuais do nó base (para não vazar)
+                    liberarListaMusicas(raiz->info.musica);
+
+                    // 2) transferir info do sucessor
+                    raiz->info = menor->info;
+
+                    // 3) evitar double free: o sucessor será destruído em removeMenorAlbum,
+                    //    então zeramos seu ponteiro de músicas que acabamos de transferir
+                    menor->info.musica = NULL;
+
+                    raiz->dir = removeMenorAlbum(raiz->dir);
+                }
+                else
+                {
+                    raiz->dir = removeNoAlbum(raiz->dir, titulo);
+                }
                 resultado = raiz;
             }
         }
 
         if (resultado != NULL)
-        {
-            balanceamento(&resultado);
-        }
+            balanceamentoAlbum(&resultado);
     }
 
     return resultado;
 }
-
-
 
 
 // Impressão pre-order
@@ -389,83 +374,98 @@ void mostrarAlbumPreOrdem(Album *raiz)
     }
 }
 
-
-/* ======== Teste rápido ======== */
-
-int main(void)
+void liberarArvoreAlbum(Album *raiz)
 {
-    Album *raiz = NULL;
+    if (raiz != NULL)
+    {
+        liberarArvoreAlbum(raiz->esq);
+        liberarArvoreAlbum(raiz->dir);
 
-    infoAlbum a = {"Epitafio",   2020, 5};
-    infoAlbum b = {"Chuva",      2018, 2};
-    infoAlbum c = {"Cavaquinho", 2025, 7};
-    infoAlbum d = {"Guitarra",   2022, 1};
-    infoAlbum e = {"Acordes",    2015, 3};  // extra pra gerar mais casos
-    infoAlbum f = {"Violino",    2021, 4};  // extra
+        // LIBERA músicas desse álbum ANTES de liberar o nó do álbum
+        liberarListaMusicas(raiz->info.musica);
 
-    // Inserções
-    insercao(&raiz, criarNo(a));
-    insercao(&raiz, criarNo(b));
-    insercao(&raiz, criarNo(c));
-    insercao(&raiz, criarNo(d));
-    insercao(&raiz, criarNo(e));
-    insercao(&raiz, criarNo(f));
-
-    printf(">>> Pre-ordem (inicial):\n");
-    mostrarAlbumPreOrdem(raiz);
-
-    // Busca simples
-    Album *encontrado = BuscarNoPorTitulo(raiz, "Chuva");
-    if (encontrado) printf("Achei %s\n\n", encontrado->info.titulo);
-
-    // 1) Remover folha (escolha um que esteja folha após balancear; “Violino” costuma virar folha)
-    printf(">>> Removendo 'Violino' (folha):\n");
-    if (removeAlbum(&raiz, "Violino"))
-        mostrarAlbumPreOrdem(raiz);
-    else
-        printf("Nao removido (nao encontrado)\n");
-    printf("\n");
-
-    // 2) Remover nó com 1 filho (dependendo do balanceamento, “Guitarra” ou “Acordes” podem cair nesse caso)
-    printf(">>> Removendo 'Guitarra' (possivel 1 filho):\n");
-    if (removeAlbum(&raiz, "Guitarra"))
-        mostrarAlbumPreOrdem(raiz);
-    else
-        printf("Nao removido (nao encontrado)\n");
-    printf("\n");
-
-    // 3) Remover nó com 2 filhos (normalmente “Epitafio” ou “Cavaquinho” terão 2 filhos após inserções)
-    printf(">>> Removendo 'Epitafio' (2 filhos):\n");
-    if (removeAlbum(&raiz, "Epitafio"))
-        mostrarAlbumPreOrdem(raiz);
-    else
-        printf("Nao removido (nao encontrado)\n");
-    printf("\n");
-
-    // 4) Remover a raiz atual (qualquer que seja após balanceamentos)
-    //    Pegue o título da raiz atual (se quiser garantir que está testando a raiz):
-    if (raiz) {
-        char raizTitulo[80];
-        strncpy(raizTitulo, raiz->info.titulo, sizeof(raizTitulo));
-        raizTitulo[sizeof(raizTitulo)-1] = '\0';
-
-        printf(">>> Removendo a raiz atual ('%s'):\n", raizTitulo);
-        if (removeAlbum(&raiz, raizTitulo))
-            mostrarAlbumPreOrdem(raiz);
-        else
-            printf("Nao removido (nao encontrado)\n");
-        printf("\n");
+        free(raiz);
     }
-
-    // 5) Tentar remover um titulo inexistente
-    printf(">>> Removendo 'NaoExiste':\n");
-    if (removeAlbum(&raiz, "NaoExiste"))
-        mostrarAlbumPreOrdem(raiz);
-    else
-        printf("Nao removido (nao encontrado)\n");
-    printf("\n");
-
-    liberarArvore(raiz);
-    return 0;
 }
+
+
+
+// /* ======== Teste rápido ======== */
+
+// int main(void)
+// {
+//     Album *raiz = NULL;
+
+//     infoAlbum a = {"Epitafio",   2020, 5};
+//     infoAlbum b = {"Chuva",      2018, 2};
+//     infoAlbum c = {"Cavaquinho", 2025, 7};
+//     infoAlbum d = {"Guitarra",   2022, 1};
+//     infoAlbum e = {"Acordes",    2015, 3};  // extra pra gerar mais casos
+//     infoAlbum f = {"Violino",    2021, 4};  // extra
+
+//     // Inserções
+//     insercao(&raiz, criarNo(a));
+//     insercao(&raiz, criarNo(b));
+//     insercao(&raiz, criarNo(c));
+//     insercao(&raiz, criarNo(d));
+//     insercao(&raiz, criarNo(e));
+//     insercao(&raiz, criarNo(f));
+
+//     printf(">>> Pre-ordem (inicial):\n");
+//     mostrarAlbumPreOrdem(raiz);
+
+//     // Busca simples
+//     Album *encontrado = BuscarNoPorTitulo(raiz, "Chuva");
+//     if (encontrado) printf("Achei %s\n\n", encontrado->info.titulo);
+
+//     // 1) Remover folha (escolha um que esteja folha após balancear; “Violino” costuma virar folha)
+//     printf(">>> Removendo 'Violino' (folha):\n");
+//     if (removeAlbum(&raiz, "Violino"))
+//         mostrarAlbumPreOrdem(raiz);
+//     else
+//         printf("Nao removido (nao encontrado)\n");
+//     printf("\n");
+
+//     // 2) Remover nó com 1 filho (dependendo do balanceamento, “Guitarra” ou “Acordes” podem cair nesse caso)
+//     printf(">>> Removendo 'Guitarra' (possivel 1 filho):\n");
+//     if (removeAlbum(&raiz, "Guitarra"))
+//         mostrarAlbumPreOrdem(raiz);
+//     else
+//         printf("Nao removido (nao encontrado)\n");
+//     printf("\n");
+
+//     // 3) Remover nó com 2 filhos (normalmente “Epitafio” ou “Cavaquinho” terão 2 filhos após inserções)
+//     printf(">>> Removendo 'Epitafio' (2 filhos):\n");
+//     if (removeAlbum(&raiz, "Epitafio"))
+//         mostrarAlbumPreOrdem(raiz);
+//     else
+//         printf("Nao removido (nao encontrado)\n");
+//     printf("\n");
+
+//     // 4) Remover a raiz atual (qualquer que seja após balanceamentos)
+//     //    Pegue o título da raiz atual (se quiser garantir que está testando a raiz):
+//     if (raiz) {
+//         char raizTitulo[80];
+//         strncpy(raizTitulo, raiz->info.titulo, sizeof(raizTitulo));
+//         raizTitulo[sizeof(raizTitulo)-1] = '\0';
+
+//         printf(">>> Removendo a raiz atual ('%s'):\n", raizTitulo);
+//         if (removeAlbum(&raiz, raizTitulo))
+//             mostrarAlbumPreOrdem(raiz);
+//         else
+//             printf("Nao removido (nao encontrado)\n");
+//         printf("\n");
+//     }
+
+//     // 5) Tentar remover um titulo inexistente
+//     printf(">>> Removendo 'NaoExiste':\n");
+//     if (removeAlbum(&raiz, "NaoExiste"))
+//         mostrarAlbumPreOrdem(raiz);
+//     else
+//         printf("Nao removido (nao encontrado)\n");
+//     printf("\n");
+
+//     liberarArvore(raiz);
+//     return 0;
+// }
 

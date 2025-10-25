@@ -87,7 +87,7 @@ void mostrarMusicas(Musica *lista)
     }
     else
     {
-        printf("Sem categorias!");
+        printf("Sem musicas!");
     }  
 }
 
@@ -162,65 +162,75 @@ int removerMusica(Musica **lista, char *tituloRemover)
     return removeu;
 }
 
-int main()
+void liberarListaMusicas(Musica *lista) 
 {
-    Musica *listaMusicas = NULL;
-    int opcao;
+    while (lista) {
+        Musica *n = lista->proximo;
+        free(lista);
+        lista = n;
+    }
+}
 
-    do
-    {
-        printf("\n--- MENU MUSICA ---\n");
-        printf("1 - Inserir musica\n");
-        printf("2 - Mostrar musicas\n");
-        printf("3 - Buscar musica\n");
-        printf("4 - Remover musica\n");
-        printf("0 - Sair\n");
-        printf("Escolha: ");
-        scanf("%d", &opcao);
-        setbuf(stdin, NULL);
 
-        if (opcao == 1)
-        {
-            Musica *novo = alocarNo();
-            preencherNo(novo);
+// int main()
+// {
+//     Musica *listaMusicas = NULL;
+//     int opcao;
 
-            if (inserirMusica(&listaMusicas, novo))
-                printf("Musica inserida com sucesso!\n");
-            else
-                printf("Erro: musica duplicada!\n");
-        }
-        else if (opcao == 2)
-        {
-            mostrarMusicas(listaMusicas);
-        }
-        else if (opcao == 3)
-        {
-            char busca[50];
-            printf("Digite o titulo da musica para buscar:\n");
-            scanf("%[^\n]", busca);
-            setbuf(stdin, NULL);
+//     do
+//     {
+//         printf("\n--- MENU MUSICA ---\n");
+//         printf("1 - Inserir musica\n");
+//         printf("2 - Mostrar musicas\n");
+//         printf("3 - Buscar musica\n");
+//         printf("4 - Remover musica\n");
+//         printf("0 - Sair\n");
+//         printf("Escolha: ");
+//         scanf("%d", &opcao);
+//         setbuf(stdin, NULL);
 
-            Musica *achada = buscarMusica(listaMusicas, busca);
-            if (achada)
-                printf("Musica encontrada: %s (%d min)\n", achada->info.titulo, achada->info.minutos);
-            else
-                printf("Musica nao encontrada!\n");
-        }
-        else if (opcao == 4)
-        {
-            char remover[50];
-            printf("Digite o titulo da musica para remover:\n");
-            scanf("%[^\n]", remover);
-            setbuf(stdin, NULL);
+//         if (opcao == 1)
+//         {
+//             Musica *novo = alocarNo();
+//             preencherNo(novo);
 
-            if (removerMusica(&listaMusicas, remover))
-                printf("Musica removida com sucesso!\n");
-            else
-                printf("Musica nao encontrada!\n");
-        }
+//             if (inserirMusica(&listaMusicas, novo))
+//                 printf("Musica inserida com sucesso!\n");
+//             else
+//                 printf("Erro: musica duplicada!\n");
+//         }
+//         else if (opcao == 2)
+//         {
+//             mostrarMusicas(listaMusicas);
+//         }
+//         else if (opcao == 3)
+//         {
+//             char busca[50];
+//             printf("Digite o titulo da musica para buscar:\n");
+//             scanf("%[^\n]", busca);
+//             setbuf(stdin, NULL);
 
-    } while(opcao != 0);
+//             Musica *achada = buscarMusica(listaMusicas, busca);
+//             if (achada)
+//                 printf("Musica encontrada: %s (%d min)\n", achada->info.titulo, achada->info.minutos);
+//             else
+//                 printf("Musica nao encontrada!\n");
+//         }
+//         else if (opcao == 4)
+//         {
+//             char remover[50];
+//             printf("Digite o titulo da musica para remover:\n");
+//             scanf("%[^\n]", remover);
+//             setbuf(stdin, NULL);
 
-    printf("Fim do programa!\n");
-    return 0;
-} 
+//             if (removerMusica(&listaMusicas, remover))
+//                 printf("Musica removida com sucesso!\n");
+//             else
+//                 printf("Musica nao encontrada!\n");
+//         }
+
+//     } while(opcao != 0);
+
+//     printf("Fim do programa!\n");
+//     return 0;
+// } 

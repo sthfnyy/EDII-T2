@@ -1,0 +1,73 @@
+# Biblioteca de Música
+ARTISTA;chico buarque;mpb;solo
+ALBUM;construcao;1971;9
+MUSICA;construcao;6
+MUSICA;cotidiano;3
+MUSICA;deus lhe pague;4
+ALBUM;meus caros amigos;1976;10
+MUSICA;meu caro amigo;4
+MUSICA;mulheres de atenas;5
+MUSICA;olhos nos olhos;4
+ARTISTA;djavan;mpb;solo
+ALBUM;luz;1982;9
+MUSICA;samurai;5
+MUSICA;oceano;5
+MUSICA;flor de lis;4
+ALBUM;rua dos amores;2012;10
+MUSICA;ja nao somos dois;4
+MUSICA;rua dos amores;4
+MUSICA;petala;5
+ARTISTA;ivete sangalo;axe;solo
+ALBUM;festa;2001;12
+MUSICA;festa;4
+MUSICA;perere;3
+MUSICA;a lua que eu te dei;4
+ALBUM;multishow ao vivo;2009;15
+MUSICA;sorte grande;4
+MUSICA;abalou;4
+MUSICA;se eu nao te amasse tanto assim;4
+ARTISTA;legiao urbana;rock;banda
+ALBUM;as quatro estacoes;1989;10
+MUSICA;pais e filhos;5
+MUSICA;monte castelo;6
+MUSICA;meninos e meninas;4
+ALBUM;dois;1986;11
+MUSICA;tempo perdido;5
+MUSICA;eduardo e monica;4
+MUSICA;indios;4
+ARTISTA;marilia mendonca;sertanejo;solo
+ALBUM;realidade;2017;13
+MUSICA;infiel;3
+MUSICA;saudade do meu ex;3
+MUSICA;eu sei de cor;4
+ALBUM;todos os cantos;2019;15
+MUSICA;ciumeira;3
+MUSICA;supera;3
+MUSICA;graveto;3
+ARTISTA;skank;poprock;banda
+ALBUM;calango;1994;11
+MUSICA;jackie tequila;3
+MUSICA;pacato cidadao;4
+MUSICA;te ver;3
+ALBUM;siderado;1998;10
+MUSICA;resposta;4
+MUSICA;garota nacional;4
+MUSICA;tanto;3
+ARTISTA;titas;rock;banda
+ALBUM;cabeca dinossauro;1986;12
+MUSICA;policia;3
+MUSICA;homem primata;3
+MUSICA;aa uu;2
+ALBUM;titanomaquia;1993;11
+MUSICA;hereditario;4
+MUSICA;sera que e isso o que eu necessito;4
+MUSICA;disneylandia;4
+ARTISTA;zeca pagodinho;samba;solo
+ALBUM;ao vivo;1999;12
+MUSICA;deixa a vida me levar;4
+MUSICA;coracao em desalinho;3
+MUSICA;vai vadiar;4
+ALBUM;samba pras mocas;2003;10
+MUSICA;samba pras mocas;3
+MUSICA;verdade;4
+MUSICA;vai la;3

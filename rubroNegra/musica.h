@@ -15,4 +15,14 @@ typedef struct Musica {
     struct Musica *proximo; // Ponteiro para a próxima música na lista ordenada
 } Musica;
 
+
+Musica *criarNo();
+Musica* alocarNo();
+void preencherNo(Musica* lista);
+int inserirMusica(Musica **lista, Musica *no);
+void mostrarMusicas(Musica *lista);
+Musica *buscarMusica(Musica *lista, char *tituloBusca);
+int removerMusica(Musica **lista, char *tituloRemover);
+void liberarListaMusicas(Musica *lista) ;
+
 #endif
