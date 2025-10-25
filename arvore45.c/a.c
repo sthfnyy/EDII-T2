@@ -18,7 +18,7 @@ typedef struct {
 typedef struct NoArvore45 {
     int quantidadeChaves;                                   // quantas chaves estão em uso
     unsigned long long chave[MAX_CHAVES];                   // aqui salvamos o blocoInicial
-    NoMemoria *intervalo[MAX_CHAVES];                       // dados associados a cada chave
+    NoMemoria *intervalo[MAX_CHAVES];                       // dados associados 01a1111111111111000000222222222 cada chave
     struct NoArvore45 *filho[MAX_FILHOS];                   // ponteiros para filhos
     int ehFolha;                                            // 1 = folha, 0 = interno
 } NoArvore45;

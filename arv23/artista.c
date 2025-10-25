@@ -238,39 +238,39 @@ int verificaDados(Artista *raiz, const char *nome)
 }
 
 
-int main(void)
-{
-    Artista *raiz = NULL;
-    infoArtista sobe;  // usado por inserirArtista
+// int main(void)
+// {
+//     Artista *raiz = NULL;
+//     infoArtista sobe;  // usado por inserirArtista
 
-    // Preenche com alguns artistas
-    infoArtista a = {"Chico", "MPB",  "Solo", 5};
-    infoArtista b = {"Ana",   "Pop",  "Banda",2};
-    infoArtista c = {"Zeca",  "Samba","Solo", 7};
-    infoArtista d = {"Beto",  "Rock", "Solo", 1};
-    infoArtista e = {"Lia",   "Indie","Solo", 3};
-    infoArtista f = {"Rafa",  "Jazz", "Banda",4};
+//     // Preenche com alguns artistas
+//     infoArtista a = {"Chico", "MPB",  "Solo", 5};
+//     infoArtista b = {"Ana",   "Pop",  "Banda",2};
+//     infoArtista c = {"Zeca",  "Samba","Solo", 7};
+//     infoArtista d = {"Beto",  "Rock", "Solo", 1};
+//     infoArtista e = {"Lia",   "Indie","Solo", 3};
+//     infoArtista f = {"Rafa",  "Jazz", "Banda",4};
 
-    inserirArtista(&raiz, NULL, a, &sobe);
-    inserirArtista(&raiz, NULL, b, &sobe);
-    inserirArtista(&raiz, NULL, c, &sobe);
-    inserirArtista(&raiz, NULL, d, &sobe);
-    inserirArtista(&raiz, NULL, e, &sobe);
-    inserirArtista(&raiz, NULL, f, &sobe);
+//     inserirArtista(&raiz, NULL, a, &sobe);
+//     inserirArtista(&raiz, NULL, b, &sobe);
+//     inserirArtista(&raiz, NULL, c, &sobe);
+//     inserirArtista(&raiz, NULL, d, &sobe);
+//     inserirArtista(&raiz, NULL, e, &sobe);
+//     inserirArtista(&raiz, NULL, f, &sobe);
 
-    // Mostra a árvore “deitada”
-    printf(">>> Estrutura da arvore (direita -> esquerda):\n");
-    if (raiz) imprimirArv(raiz, 0); else puts("(arvore vazia)");
+//     // Mostra a árvore “deitada”
+//     printf(">>> Estrutura da arvore (direita -> esquerda):\n");
+//     if (raiz) imprimirArv(raiz, 0); else puts("(arvore vazia)");
 
-    // Testes de existencia (verificaDados)
-    const char *testes[] = {"Ana", "Zeca", "Xuxa", "Lia", "Beto"};
-    for (int i = 0; i < (int)(sizeof(testes)/sizeof(testes[0])); i++) {
-        printf("[VERIFICA] '%s': %s\n",
-               testes[i],
-               verificaDados(raiz, testes[i]) ? "existe" : "nao existe");
-    }
+//     // Testes de existencia (verificaDados)
+//     const char *testes[] = {"Ana", "Zeca", "Xuxa", "Lia", "Beto"};
+//     for (int i = 0; i < (int)(sizeof(testes)/sizeof(testes[0])); i++) {
+//         printf("[VERIFICA] '%s': %s\n",
+//                testes[i],
+//                verificaDados(raiz, testes[i]) ? "existe" : "nao existe");
+//     }
 
-    // Libera memória usando a função que você tem
-    liberarArv(&raiz);
-    return 0;
-}
+//     // Libera memória usando a função que você tem
+//     liberarArv(&raiz);
+//     return 0;
+// }
