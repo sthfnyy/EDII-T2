@@ -24,7 +24,7 @@ Musica *buscarMusica(Musica *lista, char *tituloBusca);
 int     removerMusica(Musica **lista, char *tituloRemover);
 void    liberarListaMusicas(Musica *lista);
 
-int encontrarMusicaPeloTitulo(Musica *inicioDaLista, const char *tituloBuscado);
+//int encontrarMusicaPeloTitulo(Musica *inicioDaLista, const char *tituloBuscado);
 int procurarMusicaNosAlbunsEmOrdem(Album *raizDosAlbuns, const char *tituloBuscado, const char *nomeDoArtista);
 void percorrerArtistasAlbunsListasEBuscarMusica(Artista *raizDosArtistas, const char *tituloBuscado);
 

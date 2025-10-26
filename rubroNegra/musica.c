@@ -185,32 +185,6 @@ void liberarListaMusicas(Musica *lista)
 }
 
 
-//funções para busca global de musica
-
-// Função auxiliar: percorre a lista de músicas e busca uma música pelo título
-static int encontrarMusicaPeloTitulo(Musica *inicioDaLista, const char *tituloBuscado) {
-    Musica *musicaAtual = inicioDaLista;
-    int musicaEncontrada = 0;  // 0 = não encontrada, 1 = encontrada
-
-    while (musicaAtual != NULL) {
-        if (strcmp(musicaAtual->info.titulo, tituloBuscado) == 0) {
-            printf("    Música encontrada: %s (%d min)\n",
-                   musicaAtual->info.titulo,
-                   musicaAtual->info.minutos);
-            musicaEncontrada = 1;
-        }
-        musicaAtual = musicaAtual->proximo;
-    }
-
-    return musicaEncontrada;
-}
-
-#include <stdio.h>
-#include <string.h>
-#include "artista.h"
-#include "album.h"
-#include "musica.h"
-
 // percorre lista ligada de músicas e compara por título (case-sensitive)
 int encontrarMusicaPeloTitulo(Musica *inicioDaLista, const char *tituloBuscado) {
     Musica *musicaAtual = inicioDaLista;
