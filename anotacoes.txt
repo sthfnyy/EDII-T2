@@ -44,7 +44,7 @@ todos os álbuns e consequentemente todas as músicas daquele artista serão rem
 
 Faça um experimento que busque por 30 itens(artistas), mostre o caminho percorrido na árvore para encontrar o item
 e o tempo gasto. Depois faça uma análise dos resultados obtidos.
+isso
 
 
-
-* Modificar o experimento para que seja possivel mostrar a ordem da busca apos contar o tempo, criar uma extrutura que que mostre o caminho apos contar o tempo
+* Modificar o experimento para que seja possivel mostrar a ordem da busca apos contar o tempo, criar uma extrutura que que mostre o caminho apos contar o tempoisso
