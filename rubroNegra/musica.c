@@ -3,8 +3,8 @@
 #include <string.h>
 #include <strings.h>
 #include "album.h"
-#include "musica.h"   // <-- precisa para liberarListaMusicas() e tipo Musica*
-#include "artista.h" // <-- precisa para o forward de Artista na busca global
+#include "musica.h"   
+#include "artista.h" 
 
 Musica *criarNo()
 {
@@ -58,7 +58,7 @@ int inserirMusica(Musica **lista, Musica *novaMusica)
                 atual = atual->proximo;
             }
 
-            // Verifica duplicata (mesmo título)
+            // Verifica duplicata
             if ((atual != NULL && strcmp(novaMusica->info.titulo, atual->info.titulo) == 0) ||
                 (strcmp(novaMusica->info.titulo, anterior->info.titulo) == 0))
             {
@@ -145,7 +145,6 @@ int removerMusica(Musica **lista, char *tituloRemover)
         Musica *aux = *lista;
         Musica *anterior = NULL;
 
-        // Caso especial: primeiro nó
         if (strcmp(aux->info.titulo, tituloRemover) == 0)
         {
             *lista = aux->proximo;
@@ -154,7 +153,6 @@ int removerMusica(Musica **lista, char *tituloRemover)
         }
         else
         {
-            // Percorre até achar ou acabar
             while (aux != NULL && removeu == 0)
             {
                 if (strcmp(aux->info.titulo, tituloRemover) == 0)
@@ -185,7 +183,7 @@ void liberarListaMusicas(Musica *lista)
 }
 
 
-// percorre lista ligada de músicas e compara por título (case-sensitive)
+// percorre lista ligada de músicas e compara por título
 int encontrarMusicaPeloTitulo(Musica *inicioDaLista, const char *tituloBuscado) {
     Musica *musicaAtual = inicioDaLista;
     int encontrada = 0;
@@ -203,9 +201,8 @@ int encontrarMusicaPeloTitulo(Musica *inicioDaLista, const char *tituloBuscado) 
 }
 
 // percorre a RB de álbuns de UM artista (in-order) e procura a MÚSICA dentro de cada álbum
-int procurarMusicaNosAlbunsEmOrdem(Album *raizDosAlbuns,
-                                   const char *tituloBuscado,
-                                   const char *nomeDoArtista) {
+int procurarMusicaNosAlbunsEmOrdem(Album *raizDosAlbuns, const char *tituloBuscado, const char *nomeDoArtista)
+{
     int musicaEncontrada = 0;
 
     if (raizDosAlbuns != NULL) {
@@ -229,7 +226,6 @@ int procurarMusicaNosAlbunsEmOrdem(Album *raizDosAlbuns,
     return musicaEncontrada;
 }
 
-// *** NOME EXIGIDO PELO main.c ***
 void percorrerArtistasAlbunsListasEBuscarMusica(Artista *raizDosArtistas,
                                                 const char *tituloBuscado) {
     if (raizDosArtistas != NULL) {

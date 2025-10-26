@@ -55,6 +55,7 @@ static ResultadoBusca buscarArtistaComCaminho(Artista *raiz, const char *nomeBus
     while (noAtual != NULL && continuar == 1)
     {
         resultado.nosVisitados++;
+        // TODO essa impreção durante a busca porde influenciar o tempo de busca
         imprimirNoArtista(noAtual);
 
         comparacao = compararNomesIgnorandoCaixa(nomeBuscado, noAtual->info.nome);
@@ -153,7 +154,11 @@ void executarExperimentoBuscas(Artista *raizArt)
     int i = 0;
     ResultadoBusca resultado;
 
-    arvoreEstaVazia = (raizArt == NULL ? 1 : 0);
+    if (raizArt == NULL)
+    arvoreEstaVazia = 1;
+    else
+        arvoreEstaVazia = 0;
+
 
     if (arvoreEstaVazia == 1)
     {

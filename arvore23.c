@@ -28,11 +28,11 @@ DoisTres* criarNo(int info, DoisTres *fEsq, DoisTres *fCen)
 void imprimirArv(DoisTres *raiz, int nivel) 
 {
     if (raiz == NULL) return;
-    // imprime da direita pra esquerda (como uma árvore "virada")
+    // imprime da direita pra esquerda 
     imprimirArv(raiz->dir, nivel + 1);
     for (int i = 0; i < nivel; i++)
     {
-        printf("   "); //espaçamento visual 
+        printf("   "); 
     }
     if (raiz->quantInfo == 1)
     {

@@ -16,9 +16,9 @@ void menuMusicas(Album *alb);
 int main(void) {
     Artista *raizArt = NULL;
 
-    carregarBiblioteca("/home/sthefany/Documentos/5Periodo/EDII/T2/EDII-T2/rubroNegra/biblioteca.txt", &raizArt); // Lê ao iniciar
+    carregarBiblioteca("teste_caminho_nao_exite.txt", &raizArt); // Lê ao iniciar
     menuArtistas(&raizArt);
-    salvarBiblioteca("/home/sthefany/Documentos/5Periodo/EDII/T2/EDII-T2/rubroNegra/biblioteca.txt", raizArt);    // Salva ao sair
+    salvarBiblioteca("teste_caminho_nao_exite.txt", raizArt);    // Salva ao sair
     liberarArvore(raizArt);                         // Libera memória
     return 0;
 }
@@ -49,8 +49,7 @@ void menuArtistas(Artista **raizArt)
             break;
         case 2:
             infoArtista a = preencherArtista();
-            a.numAlbuns = 0; // já faz no seu preencher; garanta a->albuns=NULL
-            // a.albuns = NULL; // se existir no seu struct
+            a.numAlbuns = 0; 
             if (insercao(raizArt, alocaArtista(a)))
                 printf("Artista inserido!\n");
             else
@@ -96,7 +95,7 @@ void menuArtistas(Artista **raizArt)
         case 7:
             // Experimento: 30 buscas, imprime caminho e tempo
             // Ex.: ler 30 nomes, ou gerar; medir com clock()
-            executarExperimentoBuscas(*raizArt); // mostre caminho percorrido e tempo total/médio
+            executarExperimentoBuscas(*raizArt); // mostra caminho percorrido e tempo total/médio
             break;
         
         default:
@@ -124,7 +123,7 @@ void menuAlbuns(Artista *art) {
         {
         case 1:
             // listar RB de álbuns
-            mostrarAlbumPreOrdem(art->info.albuns); // ou in-order, como preferir
+            mostrarAlbumPreOrdem(art->info.albuns); // ou in-order
             break;
         case 2:
             infoAlbum ab = preencherAlbum();
@@ -214,9 +213,3 @@ void menuMusicas(Album *alb) {
         }
     } while (op != 0);
 }
-
-
-
-//busca global de album não esta funcionando
-//busca global de música não esta funcionando
-//a remoção só remove se digitar duas vezes o nome do álbum ou artista

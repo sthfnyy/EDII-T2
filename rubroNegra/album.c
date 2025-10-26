@@ -45,7 +45,6 @@ int corAlbum(Album *raiz)
     return corNo;
 }
 
-//tive que modificar e tirar do tipo void, pois na remoção não dava pra usar void
 Album *rotacionaEsqAlbum(Album *raiz)
 {
     Album *aux = (raiz)->dir;
@@ -146,41 +145,29 @@ int  insercaoAlbum(Album **raiz, Album *novoNo)
 
 Album* BuscarNoPorTituloAlbum(Album *raiz, const char* tituloBusca)
 {
-    // 1. Cria um ponteiro para o nó que será retornado. Inicia com NULL.
-    Album *noEncontrado = NULL;
+    Album *resultado = NULL;
 
-    // 2. Cria um ponteiro para percorrer a árvore, começando pela raiz.
-    Album *noAtual = raiz;
-
-    // 3. O laço continua enquanto não chegamos ao fim de um galho (noAtual != NULL)
-    //    e enquanto ainda não encontramos o nó (noEncontrado == NULL).
-    while (noAtual != NULL && noEncontrado == NULL)
+    if (raiz != NULL)
     {
-        // Compara o título buscado com o título do nó atual
-        int comparacao = strcmp(tituloBusca, noAtual->info.titulo);
+        int comparacao = strcmp(tituloBusca, raiz->info.titulo);
 
         if (comparacao == 0)
         {
-            // Encontrou! Atribui o nó atual à variável de resultado.
-            noEncontrado = noAtual;
+            resultado = raiz;
         }
         else if (comparacao < 0)
         {
-            // O título buscado vem antes, então desce para a esquerda.
-            noAtual = noAtual->esq;
+            resultado = BuscarNoPorTituloAlbum(raiz->esq, tituloBusca);
         }
-        else // (comparacao > 0)
+        else
         {
-            // O título buscado vem depois, então desce para a direita.
-            noAtual = noAtual->dir;
+            resultado = BuscarNoPorTituloAlbum(raiz->dir, tituloBusca);
         }
     }
 
-    // 4. Retorna a variável de resultado.
-    //    Se o nó foi encontrado, ela conterá o endereço dele.
-    //    Se o laço terminou sem encontrar, ela ainda terá o valor NULL.
-    return noEncontrado;
+    return resultado;
 }
+
 
 Album *move2EsqRedAlbum(Album *raiz)
 {
@@ -229,7 +216,6 @@ Album *removeMenorAlbum(Album *raiz)
     {
         if (raiz->esq == NULL)
         {
-            // libera músicas do álbum que será destruído
             liberarListaMusicas(raiz->info.musica);
             raiz->info.musica = NULL;
 
@@ -239,7 +225,10 @@ Album *removeMenorAlbum(Album *raiz)
         else
         {
             Album *esq = raiz->esq;
-            Album *esqEsq = esq ? esq->esq : NULL;
+            Album *esqEsq = NULL;
+
+            if (esq != NULL)
+                esqEsq = esq->esq;
 
             if (corAlbum(esq) == PRETO && corAlbum(esqEsq) == PRETO)
                 raiz = move2EsqRedAlbum(raiz);
@@ -248,8 +237,10 @@ Album *removeMenorAlbum(Album *raiz)
             resultado = raiz;
         }
     }
+
     return resultado;
 }
+
 
 
 
@@ -302,7 +293,6 @@ Album* removeNoAlbum(Album *raiz, const char *titulo)
 
             if (cmp == 0 && raiz->dir == NULL)
             {
-                // liberar músicas deste álbum ANTES de destruir
                 liberarListaMusicas(raiz->info.musica);
                 raiz->info.musica = NULL;
 
@@ -321,14 +311,10 @@ Album* removeNoAlbum(Album *raiz, const char *titulo)
                 {
                     Album *menor = procuraMenorAlbum(raiz->dir);
 
-                    // 1) liberar músicas atuais do nó base (para não vazar)
                     liberarListaMusicas(raiz->info.musica);
 
-                    // 2) transferir info do sucessor
                     raiz->info = menor->info;
 
-                    // 3) evitar double free: o sucessor será destruído em removeMenorAlbum,
-                    //    então zeramos seu ponteiro de músicas que acabamos de transferir
                     menor->info.musica = NULL;
 
                     raiz->dir = removeMenorAlbum(raiz->dir);
@@ -381,7 +367,6 @@ void liberarArvoreAlbum(Album *raiz)
         liberarArvoreAlbum(raiz->esq);
         liberarArvoreAlbum(raiz->dir);
 
-        // LIBERA músicas desse álbum ANTES de liberar o nó do álbum
         liberarListaMusicas(raiz->info.musica);
 
         free(raiz);
@@ -390,9 +375,8 @@ void liberarArvoreAlbum(Album *raiz)
 
 
 // Percorre a RB de álbuns de UM artista (in-order) e procura por título 
-int procurarAlbumPorTitulo(Album *raizDosAlbuns,
-                           const char *tituloBuscado,
-                           const char *nomeDoArtista) {
+int procurarAlbumPorTitulo(Album *raizDosAlbuns, const char *tituloBuscado, const char *nomeDoArtista) 
+{
     int albumEncontrado = 0;
 
     if (raizDosAlbuns != NULL) {
@@ -409,7 +393,8 @@ int procurarAlbumPorTitulo(Album *raizDosAlbuns,
             albumEncontrado = 1;
         }
 
-        if (procurarAlbumPorTitulo(raizDosAlbuns->dir, tituloBuscado, nomeDoArtista)) {
+        if (procurarAlbumPorTitulo(raizDosAlbuns->dir, tituloBuscado, nomeDoArtista)) 
+        {
             albumEncontrado = 1;
         }
     }
@@ -417,18 +402,15 @@ int procurarAlbumPorTitulo(Album *raizDosAlbuns,
     return albumEncontrado;
 }
 
-// *** NOME EXIGIDO PELO main.c ***
-void percorrerArtistasEBuscarAlbum(Artista *raizDosArtistas,
-                                   const char *tituloBuscado) {
+void percorrerArtistasEBuscarAlbum(Artista *raizDosArtistas, const char *tituloBuscado) 
+{
     if (raizDosArtistas != NULL) {
         percorrerArtistasEBuscarAlbum(raizDosArtistas->esq, tituloBuscado);
 
-        int albumEncontradoNesteArtista =
-            procurarAlbumPorTitulo(raizDosArtistas->info.albuns,
-                                   tituloBuscado,
-                                   raizDosArtistas->info.nome);
+        int albumEncontradoNesteArtista = procurarAlbumPorTitulo(raizDosArtistas->info.albuns, tituloBuscado, raizDosArtistas->info.nome);
 
-        if (albumEncontradoNesteArtista) {
+        if (albumEncontradoNesteArtista) 
+        {
             printf("------------------------------------------------------------\n");
         }
 

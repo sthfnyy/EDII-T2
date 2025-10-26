@@ -10,7 +10,7 @@ typedef struct {
     char estilo[TAM_STRING];
     char tipo[TAM_STRING];
     int  numAlbuns;
-    Album *albuns;      // usa o forward de tipo.h
+    Album *albuns;     
 } infoArtista;
 
 struct Artista {
@@ -46,7 +46,6 @@ Artista    *removeNo(Artista *raiz, const char *nomeArtista);
 
 void        liberarArvore(Artista *raiz);
 
-/* artista.c chama isso; protótipo aqui pra não dar “implicit declaration” */
 void        liberarArvoreAlbum(struct Album *raiz);
 
 #endif

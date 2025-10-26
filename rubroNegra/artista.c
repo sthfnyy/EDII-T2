@@ -9,13 +9,13 @@ Artista *alocaArtista(infoArtista dados)
     Artista *novoNo = (Artista *) malloc(sizeof(Artista));
     if (novoNo != NULL)
     {
-        novoNo->esq = NULL;         // sem filho à esquerda
-        novoNo->dir = NULL;         // sem filho à direita      
-        novoNo->cor = VERMELHO;     // novo nó entra vermelho
-        novoNo->info = dados;       // copia dados
+        novoNo->esq = NULL;         
+        novoNo->dir = NULL;           
+        novoNo->cor = VERMELHO;    
+        novoNo->info = dados;       
 
-        novoNo->info.numAlbuns = 0;    // se já não estiver
-        novoNo->info.albuns    = NULL; // <-- inicialize aqui
+        novoNo->info.numAlbuns = 0;    
+        novoNo->info.albuns    = NULL; 
     }
     return novoNo;
 }
@@ -42,7 +42,6 @@ int cor (Artista *raiz)
     return corNo;
 }
 
-//tive que modificar e tirar do tipo void, pois na remoção não dava pra usar void
 Artista *rotacionaEsq(Artista *raiz)
 {
     Artista *aux = (raiz)->dir;
@@ -80,7 +79,6 @@ void balanceamento(Artista **raiz)
         *raiz = rotacionaEsq(*raiz);
     }
 
-    /* --- PROTEÇÃO AQUI --- */
     if ((*raiz)->esq != NULL)
     {
         if (cor((*raiz)->esq) == VERMELHO &&
@@ -141,8 +139,6 @@ int inserirArtista (Artista **raiz, Artista *novoNo)
 }
 
 
-
-// Busca por nome (iterativa)
 Artista *buscarArtista(Artista *raiz, const char *nome)
 {
     while (raiz != NULL && strcmp(nome, raiz->info.nome) != 0)
@@ -187,7 +183,7 @@ void mostrarArtistasPreOrdem(Artista *raiz)
     
     if (raiz != NULL)
     {
-        // imprime primeiro o nó atual (raiz local)
+        // imprime primeiro o nó atual (raiz do momento)
         char corChar;
         if (raiz->cor == PRETO)
             corChar = 'P';
@@ -240,14 +236,13 @@ Artista* move2DirRed(Artista *raiz)
     {
         if (raiz->esq->esq != NULL && cor(raiz->esq->esq) == VERMELHO)
         {
-            ret = rotacionaDir(raiz); // captura novo topo
+            ret = rotacionaDir(raiz); 
             trocaCor(ret);
         }
     }
 
     return ret;
 }
-
 
 
 Artista *removeMenor(Artista *raiz)
@@ -258,7 +253,7 @@ Artista *removeMenor(Artista *raiz)
     {
         if (raiz->esq == NULL)
         {
-            // libera TODA a árvore de álbuns (e consequentemente as músicas)
+            // libera TODA a árvore de álbuns (e depois as músicas)
             liberarArvoreAlbum(raiz->info.albuns);
             raiz->info.albuns = NULL;
 
@@ -268,7 +263,10 @@ Artista *removeMenor(Artista *raiz)
         else
         {
             Artista *esq = raiz->esq;
-            Artista *esqEsq = esq ? esq->esq : NULL;
+            Artista *esqEsq = NULL;
+
+            if (esq != NULL)
+                esqEsq = esq->esq;
 
             if (cor(esq) == PRETO && cor(esqEsq) == PRETO)
                 raiz = move2EsqRed(raiz);
@@ -331,7 +329,6 @@ Artista* removeNo(Artista *raiz, const char *nomeArtista)
 
             if (cmp == 0 && raiz->dir == NULL)
             {
-                // liberar toda a árvore de álbuns ANTES de destruir o artista
                 liberarArvoreAlbum(raiz->info.albuns);
                 raiz->info.albuns = NULL;
 
@@ -350,14 +347,9 @@ Artista* removeNo(Artista *raiz, const char *nomeArtista)
                 {
                     Artista *menor = procuraMenor(raiz->dir);
 
-                    // 1) libera os álbuns atuais do nó base (para não vazar)
                     liberarArvoreAlbum(raiz->info.albuns);
 
-                    // 2) transfere info do sucessor
                     raiz->info = menor->info;
-
-                    // 3) evitar double free: o sucessor será destruído em removeMenor,
-                    //    então zere o ponteiro de álbuns que acabou de ser transferido
                     menor->info.albuns = NULL;
 
                     raiz->dir = removeMenor(raiz->dir);

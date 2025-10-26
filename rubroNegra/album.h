@@ -9,7 +9,7 @@ typedef struct infoAlbum{
     char titulo[TAM_STRING];
     int anoLancamento;
     int quantMusica;
-    Musica *musica;     // usa forward de tipo.h
+    Musica *musica;     
 } infoAlbum;
 
 struct Album {
@@ -18,7 +18,7 @@ struct Album {
     Cor cor;
 };
 
-/* API da RB de álbuns */
+
 Album  *criarNoAlbum(infoAlbum album);
 infoAlbum preencherAlbum(void);
 
@@ -43,7 +43,7 @@ Album  *removeNoAlbum(Album *raiz, const char *titulo);
 void    mostrarAlbumPreOrdem(Album *raiz);
 void    liberarArvoreAlbum(Album *raiz);
 
-/* Busca global (varre artistas e seus álbuns) */
+/* Busca global  */
 int procurarAlbumPorTitulo(Album *raizDosAlbuns,const char *tituloBuscado, const char *nomeDoArtista);
 void percorrerArtistasEBuscarAlbum(Artista *raizDosArtistas, const char *tituloBuscado);
 

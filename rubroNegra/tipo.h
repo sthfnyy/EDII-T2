@@ -1,7 +1,7 @@
 #ifndef TIPO_H
 #define TIPO_H
 
-/* Tipos e forward declarations comuns a todo o projeto */
+/* Tipos comuns a todo o projeto */
 typedef enum { VERMELHO = 0, PRETO = 1 } Cor;
 
 typedef struct Artista Artista;
