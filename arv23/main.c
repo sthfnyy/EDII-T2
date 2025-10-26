@@ -4,6 +4,7 @@
 #include "artista.h"   
 #include "album.h"     
 #include "musica.h"    
+#include "heads.h"
 
 void menuMusicas(infoAlbum *albInfo);
 void menuAlbuns(infoArtista *art);
@@ -14,17 +15,14 @@ int main(void)
 {
     Artista *raizArt = NULL;
 
-    /* TODO: quando tiver arquivo.c da 2–3
-       carregarBiblioteca23("biblioteca.txt", &raizArt); */
-    menuArtistas(&raizArt);
-    /* TODO: quando tiver arquivo.c da 2–3
-       salvarBiblioteca23("biblioteca.txt", raizArt); */
+    carregarBiblioteca23("biblioteca.txt", &raizArt);
+    menuArtistas(&raizArt); 
+    salvarBiblioteca23("biblioteca.txt", raizArt);
 
-    // Sua liberarArv deve liberar também álbuns e músicas:
-    liberarArv(&raizArt);
-
+    liberarArv(&raizArt);   
     return 0;
 }
+
 
 void menuArtistas(Artista **raizArt)
 {
@@ -39,10 +37,11 @@ void menuArtistas(Artista **raizArt)
         printf("1 - Listar artistas\n");
         printf("2 - Inserir artista\n");
         printf("3 - Entrar no artista\n");
+        printf("7 - Experimento (30 buscas)\n");   // TODO: versão 2–3
         /* printf("4 - Remover artista\n");          // TODO: remoção 2–3
            printf("5 - Buscar álbum (global)\n");     // TODO: percorrer 2–3 artistas -> 2–3 álbuns
            printf("6 - Buscar música (global)\n");    // TODO: percorrer artistas/álbuns/listas
-           printf("7 - Experimento (30 buscas)\n");   // TODO: versão 2–3
+           
            printf("8 - Carregar biblioteca\n");       // TODO: arquivo.c p/ 2–3
            printf("9 - Salvar biblioteca\n");         // TODO: arquivo.c p/ 2–3 */
         printf("Escolha: ");
@@ -92,6 +91,10 @@ void menuArtistas(Artista **raizArt)
                 printf("Sem artistas.\n");
             }
             break;
+        case 7:
+            executarExperimentoBuscas23(*raizArt);
+            break;
+
             /* case 4:
             // TODO: remover artista (quando implementar a remoção 2–3)
             // printf("Nome do artista: "); fgets(nome, sizeof nome, stdin); tiraNL(nome);
@@ -107,9 +110,7 @@ void menuArtistas(Artista **raizArt)
             // TODO: busca global de música
             break;
 
-        case 7:
-            // TODO: experimento 2–3
-            break;
+
 
         case 8:
             // TODO: carregar biblioteca 2–3

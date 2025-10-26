@@ -1,0 +1,7 @@
+# Biblioteca de Música (2-3)
+ARTISTA;jose;pop;rock
+ALBUM;jose;2010;3
+MUSICA;jose;3
+MUSICA;lo;3
+ALBUM;lo;2303;4
+ARTISTA;ko;ko;ko

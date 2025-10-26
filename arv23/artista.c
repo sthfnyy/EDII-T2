@@ -2,7 +2,8 @@
 #include<stdlib.h>
 #include<string.h>
 #include "artista.h"
-
+#include "album.h"
+#include "musica.h"
 
 Artista *alocaArtista (infoArtista dados, Artista *fEsq, Artista *fCen)
 {

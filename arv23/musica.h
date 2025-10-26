@@ -15,12 +15,15 @@ typedef struct Musica {
 
 
 Musica *criar();
+Musica* alocarNo(void);
 void preencherNo(Musica* lista);
 int inserirMusica(Musica **lista, Musica *novaMusica);
 void mostrarMusicas(Musica *lista);
 Musica *buscarMusica(Musica *lista, char *tituloBusca);
 int removerMusica(Musica **lista, char *tituloRemover);
 void liberarListaMusicas(Musica *lista) ;
+
+
 
 
 #endif

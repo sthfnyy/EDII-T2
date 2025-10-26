@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "album.h"
+#include "musica.h"
 
 
 Album *criarNoAlbum(infoAlbum info, Album *fEsq, Album *fCen)
@@ -308,7 +309,7 @@ infoAlbum *buscarInfoAlbum(Album *raiz, const char *titulo)
 //                 resultado = buscarAlbum(raiz, tituloBusca);
 
 //                 if (resultado != NULL) {
-//                     printf("\n📀 Álbum encontrado!\n");
+//                     printf("\n Álbum encontrado!\n");
 //                     if (strcmp(resultado->infoUm.titulo, tituloBusca) == 0) {
 //                         printf("Título: %s\n", resultado->infoUm.titulo);
 //                         printf("Ano: %d\n", resultado->infoUm.anoLancamento);
