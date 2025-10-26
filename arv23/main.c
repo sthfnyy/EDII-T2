@@ -37,13 +37,13 @@ void menuArtistas(Artista **raizArt)
         printf("1 - Listar artistas\n");
         printf("2 - Inserir artista\n");
         printf("3 - Entrar no artista\n");
-        printf("7 - Experimento (30 buscas)\n");   // TODO: versão 2–3
-        /* printf("4 - Remover artista\n");          // TODO: remoção 2–3
-           printf("5 - Buscar álbum (global)\n");     // TODO: percorrer 2–3 artistas -> 2–3 álbuns
-           printf("6 - Buscar música (global)\n");    // TODO: percorrer artistas/álbuns/listas
-           
-           printf("8 - Carregar biblioteca\n");       // TODO: arquivo.c p/ 2–3
-           printf("9 - Salvar biblioteca\n");         // TODO: arquivo.c p/ 2–3 */
+        //printf("4 - Remover artista\n");        
+        printf("5 - Buscar álbum (global)\n");     
+        printf("6 - Buscar música (global)\n");    
+        printf("7 - Experimento (30 buscas)\n");  
+        //printf("8 - Carregar biblioteca\n");       // TODO: arquivo.c p/ 2–3
+        //printf("9 - Salvar biblioteca\n");         // TODO: arquivo.c p/ 2–3 */
+        
         printf("Escolha: ");
         if (scanf("%d", &op) != 1) { op = 0; }
         getchar();
@@ -91,35 +91,39 @@ void menuArtistas(Artista **raizArt)
                 printf("Sem artistas.\n");
             }
             break;
-        case 7:
-            executarExperimentoBuscas23(*raizArt);
-            break;
-
-            /* case 4:
+        //case 4:
             // TODO: remover artista (quando implementar a remoção 2–3)
             // printf("Nome do artista: "); fgets(nome, sizeof nome, stdin); tiraNL(nome);
             // if (removerArtista23(raizArt, nome)) puts("✔ Removido.");
             // else puts("✖ Artista não encontrado.");
             // break;
-
         case 5:
-            // TODO: busca global de álbum
-            break;
+            char tituloBusca[TAM_STRING];
+            printf("Título do álbum (busca global): ");
+            scanf(" %49[^\n]", tituloBusca);
 
+            printf("\n=== Resultado da busca global por \"%s\" ===\n", tituloBusca);
+            percorrerArtistasEBuscarAlbum23(*raizArt, tituloBusca);
+            break;
         case 6:
-            // TODO: busca global de música
+            char titulo[TAM_STRING];
+            printf("Título da música (busca global): ");
+            scanf(" %49[^\n]", titulo);
+
+            printf("\n=== Resultado da busca global por música: \"%s\" ===\n", titulo);
+            percorrerArtistasAlbunsListasEBuscarMusica23(*raizArt, titulo);
             break;
-
-
-
-        case 8:
-            // TODO: carregar biblioteca 2–3
+        case 7:
+            executarExperimentoBuscas23(*raizArt);
             break;
+        // case 8:
+        //     // TODO: carregar biblioteca 2–3
+        //     break;
 
-        case 9:
-            // TODO: salvar biblioteca 2–3
-            break;
-        */
+        // case 9:
+        //     // TODO: salvar biblioteca 2–3
+        //     break;
+        
 
         case 0:
             break;
@@ -188,7 +192,6 @@ void menuAlbuns(infoArtista *art)
                 printf("Sem álbuns.\n");
             }
             break;
-
         /* case 4:
             // TODO: remover álbum (quando implementar a remoção 2–3)
             // printf("Título do álbum: "); fgets(titulo, sizeof titulo, stdin); tiraNL(titulo);
@@ -196,7 +199,6 @@ void menuAlbuns(infoArtista *art)
             // else puts("✖ Álbum não encontrado.");
             // break;
         */
-
         case 0:
             break;
 

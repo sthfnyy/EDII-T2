@@ -23,6 +23,8 @@ Musica *buscarMusica(Musica *lista, char *tituloBusca);
 int removerMusica(Musica **lista, char *tituloRemover);
 void liberarListaMusicas(Musica *lista) ;
 
+int encontrarMusicaPeloTitulo(Musica *inicio, const char *tituloBuscado);
+
 
 
 

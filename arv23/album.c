@@ -255,6 +255,109 @@ infoAlbum *buscarInfoAlbum(Album *raiz, const char *titulo)
 }
 
 
+/* In-order 2–3: esq -> infoUm -> cen -> infoDois -> dir */
+int procurarAlbumPorTitulo23(Album *raizAlb, const char *tituloBuscado, const char *nomeDoArtista)
+{
+    int encontrado = 0;
+    int achouAqui = 0;
+
+    if (raizAlb != NULL)
+    {
+        /* esquerda */
+        if (procurarAlbumPorTitulo23(raizAlb->esq, tituloBuscado, nomeDoArtista) == 1)
+            encontrado = 1;
+
+        /* infoUm */
+        achouAqui = (strcmp(raizAlb->infoUm.titulo, tituloBuscado) == 0);
+        if (achouAqui == 1)
+        {
+            printf("Artista: %s | Álbum: %s | Ano: %d | Faixas: %d\n",
+                   nomeDoArtista,
+                   raizAlb->infoUm.titulo,
+                   raizAlb->infoUm.anoLancamento,
+                   raizAlb->infoUm.quantMusica);
+            encontrado = 1;
+        }
+
+        /* centro */
+        if (procurarAlbumPorTitulo23(raizAlb->cen, tituloBuscado, nomeDoArtista) == 1)
+            encontrado = 1;
+
+        /* infoDois  */
+        if (raizAlb->quantInfo == 2)
+        {
+            achouAqui = (strcmp(raizAlb->infoDois.titulo, tituloBuscado) == 0);
+            if (achouAqui == 1)
+            {
+                printf("Artista: %s | Álbum: %s | Ano: %d | Faixas: %d\n",
+                       nomeDoArtista,
+                       raizAlb->infoDois.titulo,
+                       raizAlb->infoDois.anoLancamento,
+                       raizAlb->infoDois.quantMusica);
+                encontrado = 1;
+            }
+
+            /* direita */
+            if (procurarAlbumPorTitulo23(raizAlb->dir, tituloBuscado, nomeDoArtista) == 1)
+                encontrado = 1;
+        }
+    }
+
+    return encontrado;
+}
+
+
+
+int procurarMusicaNosAlbunsEmOrdem23(Album *raizAlb, const char *tituloBuscado, const char *nomeDoArtista)
+{
+    int achouEmAlgumAlbum = 0;
+    int achouAqui = 0;
+
+    if (raizAlb != NULL)
+    {
+        /* esquerda */
+        if (procurarMusicaNosAlbunsEmOrdem23(raizAlb->esq, tituloBuscado, nomeDoArtista) == 1)
+            achouEmAlgumAlbum = 1;
+
+        /* infoUm */
+        achouAqui = encontrarMusicaPeloTitulo(raizAlb->infoUm.musica, tituloBuscado);
+        if (achouAqui == 1)
+        {
+            printf("  >> Artista: %s | Álbum: %s (%d)\n",
+                   nomeDoArtista,
+                   raizAlb->infoUm.titulo,
+                   raizAlb->infoUm.anoLancamento);
+            achouEmAlgumAlbum = 1;
+        }
+
+        /* centro */
+        if (procurarMusicaNosAlbunsEmOrdem23(raizAlb->cen, tituloBuscado, nomeDoArtista) == 1)
+            achouEmAlgumAlbum = 1;
+
+        /* infoDois + direita, se existir */
+        if (raizAlb->quantInfo == 2)
+        {
+            achouAqui = encontrarMusicaPeloTitulo(raizAlb->infoDois.musica, tituloBuscado);
+            if (achouAqui == 1)
+            {
+                printf("  >> Artista: %s | Álbum: %s (%d)\n",
+                       nomeDoArtista,
+                       raizAlb->infoDois.titulo,
+                       raizAlb->infoDois.anoLancamento);
+                achouEmAlgumAlbum = 1;
+            }
+
+            if (procurarMusicaNosAlbunsEmOrdem23(raizAlb->dir, tituloBuscado, nomeDoArtista) == 1)
+                achouEmAlgumAlbum = 1;
+        }
+    }
+
+    return achouEmAlgumAlbum;
+}
+
+
+
+
 // int main() {
 //     Album *raiz = NULL;
 //     infoAlbum albumInfo;

@@ -33,6 +33,8 @@ Album* buscarAlbum(Album *raiz, const char *titulo);
 Album *buscarAlbum(Album *raiz, const char *titulo);
 infoAlbum *buscarInfoAlbum(Album *raiz, const char *titulo);
 
+int procurarAlbumPorTitulo23(Album *raizAlb, const char *tituloBuscado, const char *nomeDoArtista);
+int procurarMusicaNosAlbunsEmOrdem23(Album *raizAlb, const char *tituloBuscado, const char *nomeDoArtista);
 
 
 #endif

@@ -36,4 +36,8 @@ int verificaDados(Artista *raiz, const char *nome) ;
 Artista *buscarArtista(Artista *raiz, const char *nome);
 infoArtista *buscarInfoArtista(Artista *raiz, const char *nome);
 
+void percorrerArtistasEBuscarAlbum23(Artista *raizArt, const char *tituloBuscado);
+void percorrerArtistasAlbunsListasEBuscarMusica23(Artista *raizArt, const char *tituloBuscado);
+
+
 #endif 

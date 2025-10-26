@@ -284,3 +284,84 @@ void liberarArv(Artista **ponteiroRaiz)
     *ponteiroRaiz = NULL;
 }
 
+
+
+/* In-order 2–3: esq -> infoUm -> cen -> infoDois -> dir */
+void percorrerArtistasEBuscarAlbum23(Artista *raizArt, const char *tituloBuscado)
+{
+    int encontrouNesteArtista = 0;
+
+    if (raizArt != NULL)
+    {
+        /* esquerda */
+        percorrerArtistasEBuscarAlbum23(raizArt->esq, tituloBuscado);
+
+        /* infoUm (primeiro artista do nó) */
+        if (raizArt->infoUm.albuns != NULL)
+        {
+            encontrouNesteArtista = procurarAlbumPorTitulo23(raizArt->infoUm.albuns,
+                                                             tituloBuscado,
+                                                             raizArt->infoUm.nome);
+            if (encontrouNesteArtista == 1)
+                printf("------------------------------------------------------------\n");
+        }
+
+        /* centro */
+        percorrerArtistasEBuscarAlbum23(raizArt->cen, tituloBuscado);
+
+        /* infoDois (se existir) */
+        if (raizArt->Ninfos == 2)
+        {
+            if (raizArt->infoDois.albuns != NULL)
+            {
+                encontrouNesteArtista = procurarAlbumPorTitulo23(raizArt->infoDois.albuns,
+                                                                 tituloBuscado,
+                                                                 raizArt->infoDois.nome);
+                if (encontrouNesteArtista == 1)
+                    printf("------------------------------------------------------------\n");
+            }
+
+            /* direita */
+            percorrerArtistasEBuscarAlbum23(raizArt->dir, tituloBuscado);
+        }
+    }
+}
+
+void percorrerArtistasAlbunsListasEBuscarMusica23(Artista *raizArt, const char *tituloBuscado)
+{
+    int encontrouNesteArtista = 0;
+
+    if (raizArt != NULL)
+    {
+        /* esquerda */
+        percorrerArtistasAlbunsListasEBuscarMusica23(raizArt->esq, tituloBuscado);
+
+        /* infoUm (primeiro artista do nó) */
+        if (raizArt->infoUm.albuns != NULL)
+        {
+            encontrouNesteArtista = procurarMusicaNosAlbunsEmOrdem23(raizArt->infoUm.albuns,
+                                                                      tituloBuscado,
+                                                                      raizArt->infoUm.nome);
+            if (encontrouNesteArtista == 1)
+                printf("--------------------------------------------\n");
+        }
+
+        /* centro */
+        percorrerArtistasAlbunsListasEBuscarMusica23(raizArt->cen, tituloBuscado);
+
+        /* infoDois (se existir) + direita */
+        if (raizArt->Ninfos == 2)
+        {
+            if (raizArt->infoDois.albuns != NULL)
+            {
+                encontrouNesteArtista = procurarMusicaNosAlbunsEmOrdem23(raizArt->infoDois.albuns,
+                                                                          tituloBuscado,
+                                                                          raizArt->infoDois.nome);
+                if (encontrouNesteArtista == 1)
+                    printf("--------------------------------------------\n");
+            }
+
+            percorrerArtistasAlbunsListasEBuscarMusica23(raizArt->dir, tituloBuscado);
+        }
+    }
+}

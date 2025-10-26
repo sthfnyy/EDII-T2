@@ -184,6 +184,27 @@ void liberarListaMusicas(Musica *lista)
     }
 }
 
+int encontrarMusicaPeloTitulo(Musica *inicio, const char *tituloBuscado)
+{
+    Musica *atual = inicio;
+    int encontrada = 0;
+
+    while (atual != NULL)
+    {
+        if (strcmp(atual->info.titulo, tituloBuscado) == 0)
+        {
+            printf("    Música encontrada: %s (%d min)\n",
+                   atual->info.titulo,
+                   atual->info.minutos);
+            encontrada = 1;
+        }
+        atual = atual->proximo;
+    }
+
+    return encontrada;
+}
+
+
 
 // int main()
 // {
