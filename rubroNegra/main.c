@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include "artista.h"
 #include "album.h"
 #include "musica.h"
 #include "tipo.h"
-#include "arquivo.h"
 
 #define TAM_STRING 50
 
@@ -25,7 +25,8 @@ int main(void) {
 
 
 // ---------- Menu Artistas ----------
-void menuArtistas(Artista **raizArt) {
+void menuArtistas(Artista **raizArt) 
+{
     int op = -1;
 
     do {
@@ -76,26 +77,26 @@ void menuArtistas(Artista **raizArt) {
             else
                 printf("Artista não encontrado.\n");
             break;
-        case 5:
-            // buscar álbum global: varre RB de artistas e RB de álbuns de cada artista
+        case 5: {
             char tituloAlb[TAM_STRING];
-            printf("Título do álbum: ");
+            printf("Titulo do album: ");
             scanf(" %49[^\n]", tituloAlb);
-            Artista *p = *raizArt;
-            // percorra in-order dos artistas e busque em cada árvore de álbuns:
-            // percorrerArtistasEBuscarAlbum(p, titulo); // implemente: imprime artista onde achar
+
+            printf("\n=== Resultado da busca global por album ===\n");
+            percorrerArtistasEBuscarAlbum(*raizArt, tituloAlb);
             break;
+        }
         case 6:
-            // buscar música global: varre artistas -> álbuns -> lista de músicas
-            char titulo[TAM_STRING];
+            char tit[TAM_STRING];
             printf("Título da música: ");
-            scanf(" %49[^\n]", titulo);
-            // percorrerArtistasAlbunsListasEBuscarMusica(*raizArt, titulo); // imprime caminho completo
+            scanf(" %49[^\n]", tit);
+            printf("\n=== Resultado da busca global ===\n");
+            percorrerArtistasAlbunsListasEBuscarMusica(*raizArt, tit);
             break;
         case 7:
             // Experimento: 30 buscas, imprime caminho e tempo
             // Ex.: ler 30 nomes, ou gerar; medir com clock()
-            // executarExperimentoBuscas(*raizArt); // mostre caminho percorrido e tempo total/médio
+            executarExperimentoBuscas(*raizArt); // mostre caminho percorrido e tempo total/médio
             break;
         
         default:
@@ -154,6 +155,7 @@ void menuAlbuns(Artista *art) {
             } else {
                 printf("Álbum não encontrado.\n");
             }
+            break;
         default:
             printf("Opção inválida.\n");
             break;

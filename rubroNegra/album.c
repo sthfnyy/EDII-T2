@@ -1,8 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <strings.h>
 #include "tipo.h"
 #include "album.h"
+#include "musica.h"
+#include "artista.h"
 
 Album *criarNoAlbum(infoAlbum album)
 {
@@ -31,8 +34,6 @@ infoAlbum preencherAlbum(void)
     return dados;
 }
 
-
-// Essa funcao inicia faz com que os nos folhas seja pretos
 int corAlbum(Album *raiz)
 {
     int corNo = PRETO;
@@ -83,7 +84,6 @@ void balanceamentoAlbum(Album **raiz)
         *raiz = rotacionaEsqAlbum(*raiz);
     }
 
-    /* --- PROTEÇÃO AQUI --- */
     if ((*raiz)->esq != NULL)
     {
         if (corAlbum((*raiz)->esq) == VERMELHO &&
@@ -389,6 +389,54 @@ void liberarArvoreAlbum(Album *raiz)
 }
 
 
+// Percorre a RB de álbuns de UM artista (in-order) e procura por título 
+int procurarAlbumPorTitulo(Album *raizDosAlbuns,
+                           const char *tituloBuscado,
+                           const char *nomeDoArtista) {
+    int albumEncontrado = 0;
+
+    if (raizDosAlbuns != NULL) {
+        if (procurarAlbumPorTitulo(raizDosAlbuns->esq, tituloBuscado, nomeDoArtista)) {
+            albumEncontrado = 1;
+        }
+
+        if (strcmp(raizDosAlbuns->info.titulo, tituloBuscado) == 0) {
+            printf(">> Artista: %s | Álbum: %s | Ano: %d | Faixas (declaradas): %d\n",
+                   nomeDoArtista,
+                   raizDosAlbuns->info.titulo,
+                   raizDosAlbuns->info.anoLancamento,
+                   raizDosAlbuns->info.quantMusica);
+            albumEncontrado = 1;
+        }
+
+        if (procurarAlbumPorTitulo(raizDosAlbuns->dir, tituloBuscado, nomeDoArtista)) {
+            albumEncontrado = 1;
+        }
+    }
+
+    return albumEncontrado;
+}
+
+// *** NOME EXIGIDO PELO main.c ***
+void percorrerArtistasEBuscarAlbum(Artista *raizDosArtistas,
+                                   const char *tituloBuscado) {
+    if (raizDosArtistas != NULL) {
+        percorrerArtistasEBuscarAlbum(raizDosArtistas->esq, tituloBuscado);
+
+        int albumEncontradoNesteArtista =
+            procurarAlbumPorTitulo(raizDosArtistas->info.albuns,
+                                   tituloBuscado,
+                                   raizDosArtistas->info.nome);
+
+        if (albumEncontradoNesteArtista) {
+            printf("------------------------------------------------------------\n");
+        }
+
+        percorrerArtistasEBuscarAlbum(raizDosArtistas->dir, tituloBuscado);
+    }
+}
+
+
 
 // /* ======== Teste rápido ======== */
 
@@ -400,8 +448,8 @@ void liberarArvoreAlbum(Album *raiz)
 //     infoAlbum b = {"Chuva",      2018, 2};
 //     infoAlbum c = {"Cavaquinho", 2025, 7};
 //     infoAlbum d = {"Guitarra",   2022, 1};
-//     infoAlbum e = {"Acordes",    2015, 3};  // extra pra gerar mais casos
-//     infoAlbum f = {"Violino",    2021, 4};  // extra
+//     infoAlbum e = {"Acordes",    2015, 3};  
+//     infoAlbum f = {"Violino",    2021, 4};  
 
 //     // Inserções
 //     insercao(&raiz, criarNo(a));

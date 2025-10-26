@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "musica.h"
-#include "artista.h"
+#include <strings.h>
+#include "album.h"
+#include "musica.h"   // <-- precisa para liberarListaMusicas() e tipo Musica*
+#include "artista.h" // <-- precisa para o forward de Artista na busca global
 
 Musica *criarNo()
 {
@@ -31,46 +33,57 @@ void preencherNo(Musica* lista)
     scanf("%d", &lista->info.minutos);
 }
 
-int inserirMusica(Musica **lista, Musica *no)
+int inserirMusica(Musica **lista, Musica *novaMusica)
 {
     int inseriu = 1;
 
-    if (*lista == NULL)
+    if (novaMusica != NULL)
     {
-        *lista = no;
-        no->proximo = NULL;
-    }
-    else
-    {
-        int duplicata = 0;
-        Musica *aux = *lista;
-
-        while (aux->proximo != NULL && duplicata != 1)
+        if (*lista == NULL || strcmp(novaMusica->info.titulo, (*lista)->info.titulo) < 0)
         {
-            if (strcmp(aux->info.titulo, no->info.titulo) == 0)
-            {
-                duplicata = 1;
-            }
-            aux = aux->proximo;
-        }
-
-        if (strcmp(aux->info.titulo, no->info.titulo) == 0)
-        {
-            duplicata = 1;
-        }
-
-        if (duplicata == 0)
-        {
-            aux->proximo = no;
-            no->proximo = NULL;
+            // Inserir no início
+            novaMusica->proximo = *lista;
+            *lista = novaMusica;
         }
         else
         {
-            inseriu = 0;
+            Musica *anterior = *lista;
+            Musica *atual = (*lista)->proximo;
+            int duplicata = 0;
+
+            // Percorre até achar a posição correta (ordem alfabética)
+            while (atual != NULL && strcmp(novaMusica->info.titulo, atual->info.titulo) > 0)
+            {
+                anterior = atual;
+                atual = atual->proximo;
+            }
+
+            // Verifica duplicata (mesmo título)
+            if ((atual != NULL && strcmp(novaMusica->info.titulo, atual->info.titulo) == 0) ||
+                (strcmp(novaMusica->info.titulo, anterior->info.titulo) == 0))
+            {
+                duplicata = 1;
+            }
+
+            if (duplicata == 0)
+            {
+                novaMusica->proximo = atual;
+                anterior->proximo = novaMusica;
+            }
+            else
+            {
+                inseriu = 0;
+            }
         }
     }
+    else
+    {
+        inseriu = 0;
+    }
+
     return inseriu;
 }
+
 
 void mostrarMusicas(Musica *lista)
 {
@@ -165,11 +178,103 @@ int removerMusica(Musica **lista, char *tituloRemover)
 void liberarListaMusicas(Musica *lista) 
 {
     while (lista) {
-        Musica *n = lista->proximo;
+        Musica *aux = lista->proximo;
         free(lista);
-        lista = n;
+        lista = aux;
     }
 }
+
+
+//funções para busca global de musica
+
+// Função auxiliar: percorre a lista de músicas e busca uma música pelo título
+static int encontrarMusicaPeloTitulo(Musica *inicioDaLista, const char *tituloBuscado) {
+    Musica *musicaAtual = inicioDaLista;
+    int musicaEncontrada = 0;  // 0 = não encontrada, 1 = encontrada
+
+    while (musicaAtual != NULL) {
+        if (strcmp(musicaAtual->info.titulo, tituloBuscado) == 0) {
+            printf("    Música encontrada: %s (%d min)\n",
+                   musicaAtual->info.titulo,
+                   musicaAtual->info.minutos);
+            musicaEncontrada = 1;
+        }
+        musicaAtual = musicaAtual->proximo;
+    }
+
+    return musicaEncontrada;
+}
+
+#include <stdio.h>
+#include <string.h>
+#include "artista.h"
+#include "album.h"
+#include "musica.h"
+
+// percorre lista ligada de músicas e compara por título (case-sensitive)
+int encontrarMusicaPeloTitulo(Musica *inicioDaLista, const char *tituloBuscado) {
+    Musica *musicaAtual = inicioDaLista;
+    int encontrada = 0;
+
+    while (musicaAtual != NULL) {
+        if (strcmp(musicaAtual->info.titulo, tituloBuscado) == 0) {
+            printf("    Música encontrada: %s (%d min)\n",
+                   musicaAtual->info.titulo,
+                   musicaAtual->info.minutos);
+            encontrada = 1;
+        }
+        musicaAtual = musicaAtual->proximo;
+    }
+    return encontrada;
+}
+
+// percorre a RB de álbuns de UM artista (in-order) e procura a MÚSICA dentro de cada álbum
+int procurarMusicaNosAlbunsEmOrdem(Album *raizDosAlbuns,
+                                   const char *tituloBuscado,
+                                   const char *nomeDoArtista) {
+    int musicaEncontrada = 0;
+
+    if (raizDosAlbuns != NULL) {
+        if (procurarMusicaNosAlbunsEmOrdem(raizDosAlbuns->esq, tituloBuscado, nomeDoArtista)) {
+            musicaEncontrada = 1;
+        }
+
+        if (encontrarMusicaPeloTitulo(raizDosAlbuns->info.musica, tituloBuscado)) {
+            printf("  >> Artista: %s | Álbum: %s (%d)\n",
+                   nomeDoArtista,
+                   raizDosAlbuns->info.titulo,
+                   raizDosAlbuns->info.anoLancamento);
+            musicaEncontrada = 1;
+        }
+
+        if (procurarMusicaNosAlbunsEmOrdem(raizDosAlbuns->dir, tituloBuscado, nomeDoArtista)) {
+            musicaEncontrada = 1;
+        }
+    }
+
+    return musicaEncontrada;
+}
+
+// *** NOME EXIGIDO PELO main.c ***
+void percorrerArtistasAlbunsListasEBuscarMusica(Artista *raizDosArtistas,
+                                                const char *tituloBuscado) {
+    if (raizDosArtistas != NULL) {
+        percorrerArtistasAlbunsListasEBuscarMusica(raizDosArtistas->esq, tituloBuscado);
+
+        int encontradaNesteArtista =
+            procurarMusicaNosAlbunsEmOrdem(raizDosArtistas->info.albuns,
+                                           tituloBuscado,
+                                           raizDosArtistas->info.nome);
+
+        if (encontradaNesteArtista) {
+            printf("--------------------------------------------\n");
+        }
+
+        percorrerArtistasAlbunsListasEBuscarMusica(raizDosArtistas->dir, tituloBuscado);
+    }
+}
+
+
 
 
 // int main()

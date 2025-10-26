@@ -1,12 +1,18 @@
-#ifndef TIPOS_H
-#define TIPOS_H
+#ifndef TIPO_H
+#define TIPO_H
 
+/* Tipos e forward declarations comuns a todo o projeto */
 typedef enum { VERMELHO = 0, PRETO = 1 } Cor;
-// o chat pediu para criar isso aqui pq vai ser usado em artista e em album
-// Declarações avançadas das estruturas principais
-// Isso informa ao compilador que esses tipos existem.
-struct Album;
-struct Artista;
-struct Musica;
+
+typedef struct Artista Artista;
+typedef struct Album   Album;
+typedef struct Musica  Musica;
+
+/* ==== Protótipos do experimento ==== */
+void executarExperimentoBuscas(Artista *raizArt);
+
+/* ==== Protótipos de carga/salvamento ==== */
+int carregarBiblioteca(const char *caminho, Artista **raizArt);
+int salvarBiblioteca  (const char *caminho, Artista *raizArt);
 
 #endif
