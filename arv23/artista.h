@@ -3,11 +3,16 @@
 
 #define TAM_STRING 50
 
+typedef struct Musica Musica;
+typedef struct Album Album;
+
 typedef struct {
     char nome[TAM_STRING];
     char estilo[TAM_STRING];
     char tipo[TAM_STRING];
     int  numAlbuns;
+    Album *albuns;
+
 } infoArtista;
 
 typedef struct Artista {
@@ -28,6 +33,7 @@ void inserir23(Artista **novoNo, infoArtista dado, Artista *subArvInfo) ;
 Artista *quebrarNoArtista(Artista **no, infoArtista dado, infoArtista *sobe, Artista *filhoDir) ;
 Artista *inserirArtista(Artista **raiz, Artista *pai, infoArtista dado, infoArtista *sobe);
 int verificaDados(Artista *raiz, const char *nome) ;
-
+Artista *buscarArtista(Artista *raiz, const char *nome);
+infoArtista *buscarInfoArtista(Artista *raiz, const char *nome);
 
 #endif 

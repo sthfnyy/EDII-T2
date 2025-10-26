@@ -4,28 +4,24 @@
 #include "album.h"
 
 
-// Agora recebe uma struct 'infoAlbum' inteira
-Album *criarNo(infoAlbum info, Album *fEsq, Album *fCen)
+Album *criarNoAlbum(infoAlbum info, Album *fEsq, Album *fCen)
 {
     Album *no;
     no = (Album*) malloc(sizeof(Album));
     if (no)
     {
-        // Atribui a struct inteira
         no->infoUm = info; 
         no->esq = fEsq;
         no->cen = fCen;
         no->dir = NULL;
         no->quantInfo = 1;
-        no->pai = NULL; // Inicializa o pai como NULL
+        no->pai = NULL; 
     }
     return no;
 }
 
-// Agora recebe uma struct 'infoAlbum' inteira
-void adicionarInfo(Album **no, infoAlbum info, Album *subArvInfo)
+void adicionarInfoAlbum(Album **no, infoAlbum info, Album *subArvInfo)
 {
-    // Compara usando strcmp com o título
     if (strcmp(info.titulo, (*no)->infoUm.titulo) > 0)
     {
         (*no)->infoDois = info;
@@ -41,34 +37,30 @@ void adicionarInfo(Album **no, infoAlbum info, Album *subArvInfo)
     (*no)->quantInfo = 2;
 }
 
-// Agora recebe 'infoAlbum info' e 'infoAlbum *sobe'
-Album *quebrarNo(Album **no, infoAlbum info, infoAlbum *sobe, Album *filhoDir)
+Album *quebrarNoAlbum (Album **no, infoAlbum info, infoAlbum *sobe, Album *filhoDir)
 {
     Album *maior;
-    // Compara usando strcmp com o título
     if (strcmp(info.titulo, (*no)->infoDois.titulo) > 0)
     {
         *sobe = (*no)->infoDois;
-        maior = criarNo(info, (*no)->dir, filhoDir);
+        maior = criarNoAlbum(info, (*no)->dir, filhoDir);
         (*no)->quantInfo = 1;
     }
-    // Compara usando strcmp com o título
     else if (strcmp(info.titulo, (*no)->infoUm.titulo) > 0)
     {
         *sobe = info;
-        maior = criarNo((*no)->infoDois, filhoDir, (*no)->dir);
+        maior = criarNoAlbum((*no)->infoDois, filhoDir, (*no)->dir);
         (*no)->quantInfo = 1;
     }
     else
     {
         *sobe = (*no)->infoUm;
-        maior = criarNo((*no)->infoDois, (*no)->cen, (*no)->dir);
+        maior = criarNoAlbum((*no)->infoDois, (*no)->cen, (*no)->dir);
         (*no)->infoUm = info;
         (*no)->cen = filhoDir;
         (*no)->quantInfo = 1;
     }
     
-    // Atualiza os ponteiros de pai nos filhos
     if (maior->esq) maior->esq->pai = maior;
     if (maior->cen) maior->cen->pai = maior;
     if ((*no)->esq) (*no)->esq->pai = *no;
@@ -77,13 +69,12 @@ Album *quebrarNo(Album **no, infoAlbum info, infoAlbum *sobe, Album *filhoDir)
     return maior;
 }
 
-// Agora recebe 'infoAlbum info' e 'infoAlbum *sobe'
-Album* inserirNo(Album **raiz, Album *pai, infoAlbum info, infoAlbum *sobe) 
+Album* inserirNoAlbum (Album **raiz, Album *pai, infoAlbum info, infoAlbum *sobe) 
 {
     Album *maiorNo = NULL;
     if (*raiz == NULL)
     {
-        *raiz = criarNo(info, NULL, NULL);
+        *raiz = criarNoAlbum(info, NULL, NULL);
         (*raiz)->pai = pai;
     }
     else 
@@ -92,14 +83,14 @@ Album* inserirNo(Album **raiz, Album *pai, infoAlbum info, infoAlbum *sobe)
         {
             if ((*raiz)->quantInfo == 1) 
             {
-                adicionarInfo(raiz, info, NULL);
+                adicionarInfoAlbum(raiz, info, NULL);
             } 
-            else  // Folha cheia, precisa quebrar
+            else 
             {
-                maiorNo = quebrarNo(raiz, info, sobe, NULL);
-                if (pai == NULL) // Se o pai é NULL, está quebrando a raiz
+                maiorNo = quebrarNoAlbum (raiz, info, sobe, NULL);
+                if (pai == NULL)
                 {
-                    *raiz = criarNo(*sobe, *raiz, maiorNo);
+                    *raiz = criarNoAlbum(*sobe, *raiz, maiorNo);
                     // Atualiza o pai dos filhos
                     if ((*raiz)->esq) (*raiz)->esq->pai = *raiz;
                     if ((*raiz)->cen) (*raiz)->cen->pai = *raiz;
@@ -107,39 +98,35 @@ Album* inserirNo(Album **raiz, Album *pai, infoAlbum info, infoAlbum *sobe)
                 }
             }
         } 
-        else // Não é folha, desce recursivamente
+        else 
         {
-            // Compara usando strcmp com o título
             if(strcmp(info.titulo, (*raiz)->infoUm.titulo) < 0)
             {
-                maiorNo = inserirNo(&((*raiz)->esq), *raiz, info, sobe);
+                maiorNo = inserirNoAlbum (&((*raiz)->esq), *raiz, info, sobe);
             }
-            // Compara usando strcmp com o título
             else if((*raiz)->quantInfo == 1 || strcmp(info.titulo, (*raiz)->infoDois.titulo) < 0)
             {
-                maiorNo = inserirNo(&((*raiz)->cen), *raiz, info, sobe);
+                maiorNo = inserirNoAlbum (&((*raiz)->cen), *raiz, info, sobe);
             }
             else
             {
-                maiorNo = inserirNo(&((*raiz)->dir), *raiz, info, sobe);
+                maiorNo = inserirNoAlbum (&((*raiz)->dir), *raiz, info, sobe);
             }
             
-            if (maiorNo != NULL) // Um filho quebrou, 'sobe' tem info
+            if (maiorNo != NULL) 
             {
-                if ((*raiz)->quantInfo == 1) // Nó atual tem espaço
+                if ((*raiz)->quantInfo == 1) 
                 {
-                    adicionarInfo(raiz, *sobe, maiorNo);
-                    // Atualiza o pai do nó que subiu
+                    adicionarInfoAlbum(raiz, *sobe, maiorNo);
                     if (maiorNo) maiorNo->pai = *raiz;
                     maiorNo = NULL;
                 } 
-                else // Nó atual também está cheio, quebra de novo
+                else 
                 {
-                    maiorNo = quebrarNo(raiz, *sobe, sobe, maiorNo);
-                    if (pai == NULL) // É a raiz, cria nova raiz
+                    maiorNo = quebrarNoAlbum (raiz, *sobe, sobe, maiorNo);
+                    if (pai == NULL) 
                     {
-                        *raiz = criarNo(*sobe, *raiz, maiorNo);
-                        // Atualiza o pai dos filhos
+                        *raiz = criarNoAlbum(*sobe, *raiz, maiorNo);
                         if ((*raiz)->esq) (*raiz)->esq->pai = *raiz;
                         if ((*raiz)->cen) (*raiz)->cen->pai = *raiz;
                         maiorNo = NULL;
@@ -151,18 +138,15 @@ Album* inserirNo(Album **raiz, Album *pai, infoAlbum info, infoAlbum *sobe)
     return maiorNo;
 }
 
-// Agora busca por um 'titulo' (string)
-int verificaInfos(Album *raiz, const char* titulo) 
+int verificaInfosAlbum(Album *raiz, const char* titulo) 
 {
     int existe = 0;
-    // Compara usando strcmp com o título
     if (strcmp(raiz->infoUm.titulo, titulo) == 0) 
     {
         existe = 1;      
     }
     else if(raiz->quantInfo == 2)
     {   
-        // Compara usando strcmp com o título
         if(strcmp(raiz->infoDois.titulo, titulo) == 0)
         {
             existe = 1;
@@ -171,11 +155,11 @@ int verificaInfos(Album *raiz, const char* titulo)
     return existe;
 }
 
-void imprimirArv(Album *raiz, int nivel) 
+void imprimirArvAlbum (Album *raiz, int nivel) 
 {
     if (raiz == NULL) return;
     
-    imprimirArv(raiz->dir, nivel + 1);
+    imprimirArvAlbum (raiz->dir, nivel + 1);
     
     for (int i = 0; i < nivel; i++)
     {
@@ -184,33 +168,39 @@ void imprimirArv(Album *raiz, int nivel)
     
     if (raiz->quantInfo == 1)
     {
-        // Imprime o 'titulo'
         printf("[%s]\n", raiz->infoUm.titulo);
     }
     else
     {
-        // Imprime os dois 'titulos'
         printf("[%s | %s]\n", raiz->infoUm.titulo, raiz->infoDois.titulo);
     }
     
-    imprimirArv(raiz->cen, nivel + 1);
-    imprimirArv(raiz->esq, nivel + 1);
+    imprimirArvAlbum (raiz->cen, nivel + 1);
+    imprimirArvAlbum (raiz->esq, nivel + 1);
 }
 
-void liberarArv(Album **raiz)
+void liberarArvAlbum(Album **ponteiroRaiz)
 {
-    if (*raiz) 
+    Album *noAtual = *ponteiroRaiz;
+
+    liberarArvAlbum(&noAtual->esq);
+    liberarArvAlbum(&noAtual->cen);
+    if (noAtual->quantInfo == 2)
+        liberarArvAlbum(&noAtual->dir);
+
+    liberarListaMusicas(noAtual->infoUm.musica);
+    noAtual->infoUm.musica = NULL;
+
+    if (noAtual->quantInfo == 2)
     {
-        liberarArv(&((*raiz)->esq));
-        liberarArv(&((*raiz)->cen));
-        if ((*raiz)->quantInfo == 2)
-        {
-            liberarArv(&((*raiz)->dir));
-        }
-        free(*raiz);
-        *raiz = NULL;
+        liberarListaMusicas(noAtual->infoDois.musica);
+        noAtual->infoDois.musica = NULL;
     }
+
+    free(noAtual);
+    *ponteiroRaiz = NULL;
 }
+
 
 Album* buscarAlbum(Album *raiz, const char *titulo) {
     Album *resultado = NULL;
@@ -243,85 +233,106 @@ Album* buscarAlbum(Album *raiz, const char *titulo) {
     return resultado;
 }
 
-int main() {
-    Album *raiz = NULL;
-    infoAlbum albumInfo;
-    infoAlbum sobe;
-    int opcao;
-    char tituloBusca[TAM_STRING];
-    Album *resultado;
+infoAlbum *buscarInfoAlbum(Album *raiz, const char *titulo)
+{
+    Album *no = buscarAlbum(raiz, titulo);
+    infoAlbum *resultado = NULL;
 
-    do {
-        printf("\n--- MENU ÁRVORE 2-3 DE ÁLBUNS ---\n");
-        printf("1 - Inserir álbum\n");
-        printf("2 - Mostrar árvore\n");
-        printf("3 - Buscar álbum por título\n");
-        printf("0 - Sair\n");
-        printf("Escolha: ");
-        scanf("%d", &opcao);
-        getchar(); // remove \n pendente
-
-        switch (opcao) {
-            case 1:
-                printf("\nTítulo do álbum: ");
-                fgets(albumInfo.titulo, TAM_STRING, stdin);
-                albumInfo.titulo[strcspn(albumInfo.titulo, "\n")] = '\0';
-
-                printf("Ano de lançamento: ");
-                scanf("%d", &albumInfo.anoLancamento);
-
-                printf("Quantidade de músicas: ");
-                scanf("%d", &albumInfo.quantMusica);
-                getchar();
-
-                albumInfo.musica = NULL;
-
-                inserirNo(&raiz, NULL, albumInfo, &sobe);
-                printf("✔ Álbum inserido com sucesso!\n");
-                break;
-
-            case 2:
-                if (raiz == NULL)
-                    printf("\nÁrvore vazia!\n");
-                else {
-                    printf("\n=== Árvore 2-3 de Álbuns ===\n");
-                    imprimirArv(raiz, 0);
-                }
-                break;
-
-            case 3:
-                printf("\nDigite o título do álbum a buscar: ");
-                fgets(tituloBusca, TAM_STRING, stdin);
-                tituloBusca[strcspn(tituloBusca, "\n")] = '\0';
-
-                resultado = buscarAlbum(raiz, tituloBusca);
-
-                if (resultado != NULL) {
-                    printf("\n📀 Álbum encontrado!\n");
-                    if (strcmp(resultado->infoUm.titulo, tituloBusca) == 0) {
-                        printf("Título: %s\n", resultado->infoUm.titulo);
-                        printf("Ano: %d\n", resultado->infoUm.anoLancamento);
-                        printf("Músicas: %d\n", resultado->infoUm.quantMusica);
-                    } else {
-                        printf("Título: %s\n", resultado->infoDois.titulo);
-                        printf("Ano: %d\n", resultado->infoDois.anoLancamento);
-                        printf("Músicas: %d\n", resultado->infoDois.quantMusica);
-                    }
-                } else {
-                    printf("\n❌ Álbum não encontrado!\n");
-                }
-                break;
-
-            case 0:
-                printf("\nEncerrando...\n");
-                break;
-
-            default:
-                printf("\nOpção inválida!\n");
+    if (no != NULL)
+    {
+        if (strcmp(no->infoUm.titulo, titulo) == 0)
+        {
+            resultado = &no->infoUm;
         }
+        else if (no->quantInfo == 2 && strcmp(no->infoDois.titulo, titulo) == 0)
+        {
+            resultado = &no->infoDois;
+        }
+    }
 
-    } while (opcao != 0);
-
-    liberarArv(&raiz);
-    return 0;
+    return resultado;
 }
+
+
+// int main() {
+//     Album *raiz = NULL;
+//     infoAlbum albumInfo;
+//     infoAlbum sobe;
+//     int opcao;
+//     char tituloBusca[TAM_STRING];
+//     Album *resultado;
+
+//     do {
+//         printf("\n--- MENU ÁRVORE 2-3 DE ÁLBUNS ---\n");
+//         printf("1 - Inserir álbum\n");
+//         printf("2 - Mostrar árvore\n");
+//         printf("3 - Buscar álbum por título\n");
+//         printf("0 - Sair\n");
+//         printf("Escolha: ");
+//         scanf("%d", &opcao);
+//         getchar(); 
+
+//         switch (opcao) {
+//             case 1:
+//                 printf("\nTítulo do álbum: ");
+//                 fgets(albumInfo.titulo, TAM_STRING, stdin);
+//                 albumInfo.titulo[strcspn(albumInfo.titulo, "\n")] = '\0';
+
+//                 printf("Ano de lançamento: ");
+//                 scanf("%d", &albumInfo.anoLancamento);
+
+//                 printf("Quantidade de músicas: ");
+//                 scanf("%d", &albumInfo.quantMusica);
+//                 getchar();
+
+//                 albumInfo.musica = NULL;
+
+//                 inserirNoAlbum (&raiz, NULL, albumInfo, &sobe);
+//                 printf("Álbum inserido com sucesso!\n");
+//                 break;
+
+//             case 2:
+//                 if (raiz == NULL)
+//                     printf("\nÁrvore vazia!\n");
+//                 else {
+//                     printf("\n=== Árvore 2-3 de Álbuns ===\n");
+//                     imprimirArvAlbum (raiz, 0);
+//                 }
+//                 break;
+
+//             case 3:
+//                 printf("\nDigite o título do álbum a buscar: ");
+//                 fgets(tituloBusca, TAM_STRING, stdin);
+//                 tituloBusca[strcspn(tituloBusca, "\n")] = '\0';
+
+//                 resultado = buscarAlbum(raiz, tituloBusca);
+
+//                 if (resultado != NULL) {
+//                     printf("\n📀 Álbum encontrado!\n");
+//                     if (strcmp(resultado->infoUm.titulo, tituloBusca) == 0) {
+//                         printf("Título: %s\n", resultado->infoUm.titulo);
+//                         printf("Ano: %d\n", resultado->infoUm.anoLancamento);
+//                         printf("Músicas: %d\n", resultado->infoUm.quantMusica);
+//                     } else {
+//                         printf("Título: %s\n", resultado->infoDois.titulo);
+//                         printf("Ano: %d\n", resultado->infoDois.anoLancamento);
+//                         printf("Músicas: %d\n", resultado->infoDois.quantMusica);
+//                     }
+//                 } else {
+//                     printf("\n❌ Álbum não encontrado!\n");
+//                 }
+//                 break;
+
+//             case 0:
+//                 printf("\nEncerrando...\n");
+//                 break;
+
+//             default:
+//                 printf("\nOpção inválida!\n");
+//         }
+
+//     } while (opcao != 0);
+
+//     liberarArvAlbum (&raiz);
+//     return 0;
+// }

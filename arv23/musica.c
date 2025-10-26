@@ -1,76 +1,91 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "musica.h"
-#include "artista.h"
+#include <strings.h>
+#include "album.h"
+#include "musica.h"   
+#include "artista.h" 
 
-Musica *criarNo()
+Musica *criar()
 {
     return NULL;
 }
 
-Musica* alocarNo()
+Musica *alocarNo()
 {
-    Musica *novoNo = (Musica*) malloc(sizeof(Musica));
-    if (novoNo == NULL)
+    Musica *novo = (Musica*) malloc(sizeof(Musica));
+    if (novo == NULL)
     {
-        printf("Erro ao alocar memoria\n");
-    }
-
-    novoNo->proximo = NULL;
-    return novoNo;
-}
-
-void preencherNo(Musica* lista)
-{
-    printf("Digite o nome da musica:\n");
-    setbuf(stdin, NULL);
-    scanf("%[^\n]", lista->info.titulo);
-
-    printf("Digite a duração da musica:\n");
-    scanf("%d", &lista->info.minutos);
-}
-
-int inserirMusica(Musica **lista, Musica *no)
-{
-    int inseriu = 1;
-
-    if (*lista == NULL)
-    {
-        *lista = no;
-        no->proximo = NULL;
+        printf("Erro ao alocar memoria.\n");
     }
     else
     {
-        int duplicata = 0;
-        Musica *aux = *lista;
+        novo->proximo = NULL;
+    }
+    return novo;
+}
 
-        while (aux->proximo != NULL && duplicata != 1)
-        {
-            if (strcmp(aux->info.titulo, no->info.titulo) == 0)
-            {
-                duplicata = 1;
-            }
-            aux = aux->proximo;
-        }
+void preencherNo(Musica *mus)
+{
+    printf("Digite o título da música: ");
+    scanf(" %49[^\n]", mus->info.titulo);
 
-        if (strcmp(aux->info.titulo, no->info.titulo) == 0)
-        {
-            duplicata = 1;
-        }
+    printf("Digite a duração (min): ");
+    scanf("%d", &mus->info.minutos);
+}
 
-        if (duplicata == 0)
+
+int inserirMusica(Musica **lista, Musica *novaMusica)
+{
+    int inseriu = 1;
+
+    if (novaMusica != NULL)
+    {
+        if (*lista == NULL || strcmp(novaMusica->info.titulo, (*lista)->info.titulo) < 0)
         {
-            aux->proximo = no;
-            no->proximo = NULL;
+            // Inserir no início
+            novaMusica->proximo = *lista;
+            *lista = novaMusica;
         }
         else
         {
-            inseriu = 0;
+            Musica *anterior = *lista;
+            Musica *atual = (*lista)->proximo;
+            int duplicata = 0;
+
+            // Percorre até achar a posição correta (ordem alfabética)
+            while (atual != NULL && strcmp(novaMusica->info.titulo, atual->info.titulo) > 0)
+            {
+                anterior = atual;
+                atual = atual->proximo;
+            }
+
+            // Verifica duplicata
+            if ((atual != NULL && strcmp(novaMusica->info.titulo, atual->info.titulo) == 0) ||
+                (strcmp(novaMusica->info.titulo, anterior->info.titulo) == 0))
+            {
+                duplicata = 1;
+            }
+
+            if (duplicata == 0)
+            {
+                novaMusica->proximo = atual;
+                anterior->proximo = novaMusica;
+            }
+            else
+            {
+                inseriu = 0;
+            }
         }
     }
+    else
+    {
+        inseriu = 0;
+    }
+
     return inseriu;
 }
+
 
 void mostrarMusicas(Musica *lista)
 {
@@ -87,7 +102,7 @@ void mostrarMusicas(Musica *lista)
     }
     else
     {
-        printf("Sem categorias!");
+        printf("Sem musicas!");
     }  
 }
 
@@ -132,7 +147,6 @@ int removerMusica(Musica **lista, char *tituloRemover)
         Musica *aux = *lista;
         Musica *anterior = NULL;
 
-        // Caso especial: primeiro nó
         if (strcmp(aux->info.titulo, tituloRemover) == 0)
         {
             *lista = aux->proximo;
@@ -141,7 +155,6 @@ int removerMusica(Musica **lista, char *tituloRemover)
         }
         else
         {
-            // Percorre até achar ou acabar
             while (aux != NULL && removeu == 0)
             {
                 if (strcmp(aux->info.titulo, tituloRemover) == 0)
@@ -161,6 +174,16 @@ int removerMusica(Musica **lista, char *tituloRemover)
 
     return removeu;
 }
+
+void liberarListaMusicas(Musica *lista) 
+{
+    while (lista) {
+        Musica *aux = lista->proximo;
+        free(lista);
+        lista = aux;
+    }
+}
+
 
 int main()
 {

@@ -2,18 +2,14 @@
 #define ALBUM_23_H
 
 #define TAM_STRING 50
-
-typedef struct Musica {
-    char titulo[TAM_STRING];
-    int minutos;
-    struct Musica *proximo;
-} Musica;
+typedef struct Musica Musica;
 
 typedef struct infoAlbum {
     char titulo[TAM_STRING];
     int anoLancamento;
     int quantMusica;
     Musica *musica;
+
 } infoAlbum;
 
 typedef struct Album {
@@ -26,14 +22,17 @@ typedef struct Album {
     struct Album *pai;
 } Album;
 
-Album *criarNo(infoAlbum info, Album *fEsq, Album *fCen);
-void adicionarInfo(Album **no, infoAlbum info, Album *subArvInfo);
-Album *quebrarNo(Album **no, infoAlbum info, infoAlbum *sobe, Album *filhoDir);
-Album* inserirNo(Album **raiz, Album *pai, infoAlbum info, infoAlbum *sobe);
-int verificaInfos(Album *raiz, const char* titulo);
-void imprimirArv(Album *raiz, int nivel);
-void liberarArv(Album **raiz);
+Album *criarNoAlbum(infoAlbum info, Album *fEsq, Album *fCen);
+void adicionarInfoAlbum(Album **no, infoAlbum info, Album *subArvInfo);
+Album *quebrarNoAlbum(Album **no, infoAlbum info, infoAlbum *sobe, Album *filhoDir);
+Album* inserirNoAlbum(Album **raiz, Album *pai, infoAlbum info, infoAlbum *sobe);
+int verificaInfosAlbum(Album *raiz, const char* titulo);
+void imprimirArvAlbum(Album *raiz, int nivel);
+void liberarArvAlbum(Album **raiz);
 Album* buscarAlbum(Album *raiz, const char *titulo);
+Album *buscarAlbum(Album *raiz, const char *titulo);
+infoAlbum *buscarInfoAlbum(Album *raiz, const char *titulo);
+
 
 
 #endif
