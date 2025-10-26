@@ -208,8 +208,6 @@ void liberarArvAlbum(Album **ponteiroRaiz)
     }
 }
 
-
-
 Album* buscarAlbum(Album *raiz, const char *titulo) {
     Album *resultado = NULL;
 

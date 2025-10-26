@@ -41,12 +41,8 @@ void menuArtistas(Artista **raizArt)
         printf("5 - Buscar álbum (global)\n");     
         printf("6 - Buscar música (global)\n");    
         printf("7 - Experimento (30 buscas)\n");  
-        //printf("8 - Carregar biblioteca\n");       // TODO: arquivo.c p/ 2–3
-        //printf("9 - Salvar biblioteca\n");         // TODO: arquivo.c p/ 2–3 */
-        
-        printf("Escolha: ");
-        if (scanf("%d", &op) != 1) { op = 0; }
-        getchar();
+
+        printf("Escolha: "); scanf("%d", &op);
 
         switch (op){
         case 1:
@@ -116,15 +112,6 @@ void menuArtistas(Artista **raizArt)
         case 7:
             executarExperimentoBuscas23(*raizArt);
             break;
-        // case 8:
-        //     // TODO: carregar biblioteca 2–3
-        //     break;
-
-        // case 9:
-        //     // TODO: salvar biblioteca 2–3
-        //     break;
-        
-
         case 0:
             break;
 
@@ -135,8 +122,6 @@ void menuArtistas(Artista **raizArt)
 
     } while (op != 0);
 }
-
-
 
 void menuAlbuns(infoArtista *art)
 {
@@ -195,20 +180,18 @@ void menuAlbuns(infoArtista *art)
         /* case 4:
             // TODO: remover álbum (quando implementar a remoção 2–3)
             // printf("Título do álbum: "); fgets(titulo, sizeof titulo, stdin); tiraNL(titulo);
-            // if (removerAlbum23(&art->albuns, titulo)) { art->numAlbuns--; puts("✔ Removido."); }
-            // else puts("✖ Álbum não encontrado.");
+            // if (removerAlbum23(&art->albuns, titulo)) { art->numAlbuns--; puts("Removido."); }
+            // else puts("Álbum não encontrado.");
             // break;
         */
         case 0:
             break;
-
         default:
             printf("Opção inválida.");
             break;
         }
     } while (op != 0);
 }
-
 
 void menuMusicas(infoAlbum *albInfo)
 {

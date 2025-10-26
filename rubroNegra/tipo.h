@@ -15,4 +15,10 @@ void executarExperimentoBuscas(Artista *raizArt);
 int carregarBiblioteca(const char *caminho, Artista **raizArt);
 int salvarBiblioteca  (const char *caminho, Artista *raizArt);
 
+typedef struct {
+    const Artista **nos;
+    int qtd;
+    int cap;
+} CaminhoRB;
+
 #endif
