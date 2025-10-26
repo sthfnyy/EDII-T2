@@ -182,25 +182,32 @@ void imprimirArvAlbum (Album *raiz, int nivel)
 
 void liberarArvAlbum(Album **ponteiroRaiz)
 {
-    Album *noAtual = *ponteiroRaiz;
+    Album *noAtual = NULL;
 
-    liberarArvAlbum(&noAtual->esq);
-    liberarArvAlbum(&noAtual->cen);
-    if (noAtual->quantInfo == 2)
-        liberarArvAlbum(&noAtual->dir);
-
-    liberarListaMusicas(noAtual->infoUm.musica);
-    noAtual->infoUm.musica = NULL;
-
-    if (noAtual->quantInfo == 2)
+    if (ponteiroRaiz != NULL && *ponteiroRaiz != NULL)
     {
-        liberarListaMusicas(noAtual->infoDois.musica);
-        noAtual->infoDois.musica = NULL;
-    }
+        noAtual = *ponteiroRaiz;
 
-    free(noAtual);
-    *ponteiroRaiz = NULL;
+        if (noAtual->esq != NULL)
+            liberarArvAlbum(&noAtual->esq);
+
+        if (noAtual->cen != NULL)
+            liberarArvAlbum(&noAtual->cen);
+
+        if (noAtual->quantInfo == 2 && noAtual->dir != NULL)
+            liberarArvAlbum(&noAtual->dir);
+
+        if (noAtual->infoUm.musica != NULL)
+            liberarListaMusicas(noAtual->infoUm.musica);
+
+        if (noAtual->quantInfo == 2 && noAtual->infoDois.musica != NULL)
+            liberarListaMusicas(noAtual->infoDois.musica);
+
+        free(noAtual);
+        *ponteiroRaiz = NULL;
+    }
 }
+
 
 
 Album* buscarAlbum(Album *raiz, const char *titulo) {
@@ -305,7 +312,6 @@ int procurarAlbumPorTitulo23(Album *raizAlb, const char *tituloBuscado, const ch
 
     return encontrado;
 }
-
 
 
 int procurarMusicaNosAlbunsEmOrdem23(Album *raizAlb, const char *tituloBuscado, const char *nomeDoArtista)

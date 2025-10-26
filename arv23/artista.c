@@ -14,6 +14,8 @@ Artista *alocaArtista (infoArtista dados, Artista *fEsq, Artista *fCen)
         novo->esq = fEsq;
         novo->cen = fCen;
         novo->dir = NULL;
+        dados.numAlbuns = 0;
+        dados.albuns    = NULL;
     }
     return novo;
 }
@@ -254,36 +256,33 @@ infoArtista *buscarInfoArtista(Artista *raiz, const char *nome)
     return resultado;
 }
 
-
 void liberarArv(Artista **ponteiroRaiz)
 {
+    Artista *noAtual = NULL;
 
-    Artista *noAtual = *ponteiroRaiz;
-
-    // 1) Libera recursivamente as subárvores de artistas
-    liberarArv(&noAtual->esq);
-    liberarArv(&noAtual->cen);
-    if (noAtual->Ninfos == 2)
-        liberarArv(&noAtual->dir);
-
-    // 2) Libera os álbuns (e músicas) ligados aos artistas deste nó
-    if (noAtual->infoUm.albuns)
+    if (ponteiroRaiz != NULL && *ponteiroRaiz != NULL)
     {
-        liberarArvAlbum(&noAtual->infoUm.albuns);
-        noAtual->infoUm.albuns = NULL;
-    }
+        noAtual = *ponteiroRaiz;
 
-    if (noAtual->Ninfos == 2 && noAtual->infoDois.albuns)
-    {
-        liberarArvAlbum(&noAtual->infoDois.albuns);
-        noAtual->infoDois.albuns = NULL;
-    }
+        if (noAtual->esq != NULL)
+            liberarArv(&noAtual->esq);
 
-    // 3) Libera o nó do artista e zera o ponteiro
-    free(noAtual);
-    *ponteiroRaiz = NULL;
+        if (noAtual->cen != NULL)
+            liberarArv(&noAtual->cen);
+
+        if (noAtual->Ninfos == 2 && noAtual->dir != NULL)
+            liberarArv(&noAtual->dir);
+
+        if (noAtual->infoUm.albuns != NULL)
+            liberarArvAlbum(&noAtual->infoUm.albuns);
+
+        if (noAtual->Ninfos == 2 && noAtual->infoDois.albuns != NULL)
+            liberarArvAlbum(&noAtual->infoDois.albuns);
+
+        free(noAtual);
+        *ponteiroRaiz = NULL;
+    }
 }
-
 
 
 /* In-order 2–3: esq -> infoUm -> cen -> infoDois -> dir */
