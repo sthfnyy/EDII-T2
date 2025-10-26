@@ -16,9 +16,9 @@ void menuMusicas(Album *alb);
 int main(void) {
     Artista *raizArt = NULL;
 
-    carregarBiblioteca("teste_caminho_nao_exite.txt", &raizArt); // Lê ao iniciar
+    carregarBiblioteca("/home/rais/Downloads/TrabalhoII-EDII/EDII-T2/rubroNegra/biblioteca.txt", &raizArt); // Lê ao iniciar
     menuArtistas(&raizArt);
-    salvarBiblioteca("teste_caminho_nao_exite.txt", raizArt);    // Salva ao sair
+    salvarBiblioteca("/home/rais/Downloads/TrabalhoII-EDII/EDII-T2/rubroNegra/biblioteca.txt", raizArt);    // Salva ao sair
     liberarArvore(raizArt);                         // Libera memória
     return 0;
 }
