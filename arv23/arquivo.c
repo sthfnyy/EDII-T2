@@ -92,7 +92,6 @@ static void salvarArvoreDeArtistas23(FILE *arquivo, Artista *raizArt)
     }
 }
 
-/* ======================= API ======================= */
 
 int carregarBiblioteca23(const char *caminho, Artista **raizArt)
 {

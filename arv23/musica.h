@@ -25,7 +25,4 @@ void liberarListaMusicas(Musica *lista) ;
 
 int encontrarMusicaPeloTitulo(Musica *inicio, const char *tituloBuscado);
 
-
-
-
 #endif

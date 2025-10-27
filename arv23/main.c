@@ -4,7 +4,7 @@
 #include "artista.h"   
 #include "album.h"     
 #include "musica.h"    
-#include "heads.h"
+#include "tipo.h"
 
 void menuMusicas(infoAlbum *albInfo);
 void menuAlbuns(infoArtista *art);
@@ -15,9 +15,9 @@ int main(void)
 {
     Artista *raizArt = NULL;
 
-    carregarBiblioteca23("biblioteca.txt", &raizArt);
+    carregarBiblioteca23("biblioteca_30.txt", &raizArt);
     menuArtistas(&raizArt); 
-    salvarBiblioteca23("biblioteca.txt", raizArt);
+    salvarBiblioteca23("biblioteca_30.txt", raizArt);
 
     liberarArv(&raizArt);   
     return 0;
@@ -89,9 +89,6 @@ void menuArtistas(Artista **raizArt)
             break;
         //case 4:
             // TODO: remover artista (quando implementar a remoção 2–3)
-            // printf("Nome do artista: "); fgets(nome, sizeof nome, stdin); tiraNL(nome);
-            // if (removerArtista23(raizArt, nome)) puts("✔ Removido.");
-            // else puts("✖ Artista não encontrado.");
             // break;
         case 5:
             char tituloBusca[TAM_STRING];
@@ -179,9 +176,6 @@ void menuAlbuns(infoArtista *art)
             break;
         /* case 4:
             // TODO: remover álbum (quando implementar a remoção 2–3)
-            // printf("Título do álbum: "); fgets(titulo, sizeof titulo, stdin); tiraNL(titulo);
-            // if (removerAlbum23(&art->albuns, titulo)) { art->numAlbuns--; puts("Removido."); }
-            // else puts("Álbum não encontrado.");
             // break;
         */
         case 0:
