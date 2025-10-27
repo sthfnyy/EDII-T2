@@ -241,9 +241,6 @@ Album *removeMenorAlbum(Album *raiz)
     return resultado;
 }
 
-
-
-
 Album *procuraMenorAlbum(Album *raiz)
 {
     Album *aux = raiz;
@@ -417,85 +414,3 @@ void percorrerArtistasEBuscarAlbum(Artista *raizDosArtistas, const char *tituloB
         percorrerArtistasEBuscarAlbum(raizDosArtistas->dir, tituloBuscado);
     }
 }
-
-
-
-// /* ======== Teste rápido ======== */
-
-// int main(void)
-// {
-//     Album *raiz = NULL;
-
-//     infoAlbum a = {"Epitafio",   2020, 5};
-//     infoAlbum b = {"Chuva",      2018, 2};
-//     infoAlbum c = {"Cavaquinho", 2025, 7};
-//     infoAlbum d = {"Guitarra",   2022, 1};
-//     infoAlbum e = {"Acordes",    2015, 3};  
-//     infoAlbum f = {"Violino",    2021, 4};  
-
-//     // Inserções
-//     insercao(&raiz, criarNo(a));
-//     insercao(&raiz, criarNo(b));
-//     insercao(&raiz, criarNo(c));
-//     insercao(&raiz, criarNo(d));
-//     insercao(&raiz, criarNo(e));
-//     insercao(&raiz, criarNo(f));
-
-//     printf(">>> Pre-ordem (inicial):\n");
-//     mostrarAlbumPreOrdem(raiz);
-
-//     // Busca simples
-//     Album *encontrado = BuscarNoPorTitulo(raiz, "Chuva");
-//     if (encontrado) printf("Achei %s\n\n", encontrado->info.titulo);
-
-//     // 1) Remover folha (escolha um que esteja folha após balancear; “Violino” costuma virar folha)
-//     printf(">>> Removendo 'Violino' (folha):\n");
-//     if (removeAlbum(&raiz, "Violino"))
-//         mostrarAlbumPreOrdem(raiz);
-//     else
-//         printf("Nao removido (nao encontrado)\n");
-//     printf("\n");
-
-//     // 2) Remover nó com 1 filho (dependendo do balanceamento, “Guitarra” ou “Acordes” podem cair nesse caso)
-//     printf(">>> Removendo 'Guitarra' (possivel 1 filho):\n");
-//     if (removeAlbum(&raiz, "Guitarra"))
-//         mostrarAlbumPreOrdem(raiz);
-//     else
-//         printf("Nao removido (nao encontrado)\n");
-//     printf("\n");
-
-//     // 3) Remover nó com 2 filhos (normalmente “Epitafio” ou “Cavaquinho” terão 2 filhos após inserções)
-//     printf(">>> Removendo 'Epitafio' (2 filhos):\n");
-//     if (removeAlbum(&raiz, "Epitafio"))
-//         mostrarAlbumPreOrdem(raiz);
-//     else
-//         printf("Nao removido (nao encontrado)\n");
-//     printf("\n");
-
-//     // 4) Remover a raiz atual (qualquer que seja após balanceamentos)
-//     //    Pegue o título da raiz atual (se quiser garantir que está testando a raiz):
-//     if (raiz) {
-//         char raizTitulo[80];
-//         strncpy(raizTitulo, raiz->info.titulo, sizeof(raizTitulo));
-//         raizTitulo[sizeof(raizTitulo)-1] = '\0';
-
-//         printf(">>> Removendo a raiz atual ('%s'):\n", raizTitulo);
-//         if (removeAlbum(&raiz, raizTitulo))
-//             mostrarAlbumPreOrdem(raiz);
-//         else
-//             printf("Nao removido (nao encontrado)\n");
-//         printf("\n");
-//     }
-
-//     // 5) Tentar remover um titulo inexistente
-//     printf(">>> Removendo 'NaoExiste':\n");
-//     if (removeAlbum(&raiz, "NaoExiste"))
-//         mostrarAlbumPreOrdem(raiz);
-//     else
-//         printf("Nao removido (nao encontrado)\n");
-//     printf("\n");
-
-//     liberarArvore(raiz);
-//     return 0;
-// }
-

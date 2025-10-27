@@ -13,7 +13,6 @@ static void removerQuebraLinha(char *texto)
         texto[strcspn(texto, "\r\n")] = '\0'; 
 }
 
-
 static void salvarListaDeMusicas(FILE *arquivo, Musica *listaDeMusicas) 
 {
     Musica *musicaAtual;
@@ -25,7 +24,6 @@ static void salvarListaDeMusicas(FILE *arquivo, Musica *listaDeMusicas)
                 musicaAtual->info.minutos);
     }
 }
-
 
 static void salvarArvoreDeAlbuns(FILE *arquivo, Album *raizAlbum) 
 {
@@ -176,7 +174,6 @@ int carregarBiblioteca(const char *caminho, Artista **raizArt)
                     }
                 }
 
-                /* (Demais tipos de linha são ignorados silenciosamente) */
             }
         }
 

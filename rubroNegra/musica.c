@@ -51,7 +51,7 @@ int inserirMusica(Musica **lista, Musica *novaMusica)
             Musica *atual = (*lista)->proximo;
             int duplicata = 0;
 
-            // Percorre até achar a posição correta (ordem alfabética)
+            // Percorre até achar a posição correta 
             while (atual != NULL && strcmp(novaMusica->info.titulo, atual->info.titulo) > 0)
             {
                 anterior = atual;
@@ -244,68 +244,3 @@ void percorrerArtistasAlbunsListasEBuscarMusica(Artista *raizDosArtistas,
     }
 }
 
-
-
-
-// int main()
-// {
-//     Musica *listaMusicas = NULL;
-//     int opcao;
-
-//     do
-//     {
-//         printf("\n--- MENU MUSICA ---\n");
-//         printf("1 - Inserir musica\n");
-//         printf("2 - Mostrar musicas\n");
-//         printf("3 - Buscar musica\n");
-//         printf("4 - Remover musica\n");
-//         printf("0 - Sair\n");
-//         printf("Escolha: ");
-//         scanf("%d", &opcao);
-//         setbuf(stdin, NULL);
-
-//         if (opcao == 1)
-//         {
-//             Musica *novo = alocarNo();
-//             preencherNo(novo);
-
-//             if (inserirMusica(&listaMusicas, novo))
-//                 printf("Musica inserida com sucesso!\n");
-//             else
-//                 printf("Erro: musica duplicada!\n");
-//         }
-//         else if (opcao == 2)
-//         {
-//             mostrarMusicas(listaMusicas);
-//         }
-//         else if (opcao == 3)
-//         {
-//             char busca[50];
-//             printf("Digite o titulo da musica para buscar:\n");
-//             scanf("%[^\n]", busca);
-//             setbuf(stdin, NULL);
-
-//             Musica *achada = buscarMusica(listaMusicas, busca);
-//             if (achada)
-//                 printf("Musica encontrada: %s (%d min)\n", achada->info.titulo, achada->info.minutos);
-//             else
-//                 printf("Musica nao encontrada!\n");
-//         }
-//         else if (opcao == 4)
-//         {
-//             char remover[50];
-//             printf("Digite o titulo da musica para remover:\n");
-//             scanf("%[^\n]", remover);
-//             setbuf(stdin, NULL);
-
-//             if (removerMusica(&listaMusicas, remover))
-//                 printf("Musica removida com sucesso!\n");
-//             else
-//                 printf("Musica nao encontrada!\n");
-//         }
-
-//     } while(opcao != 0);
-
-//     printf("Fim do programa!\n");
-//     return 0;
-// } 

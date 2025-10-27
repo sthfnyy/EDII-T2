@@ -26,26 +26,20 @@ Artista    *rotacionaEsq(Artista *raiz);
 Artista    *rotacionaDir(Artista *raiz);
 void        trocaCor(Artista *raiz);
 void        balanceamento(Artista **raiz);
-
 Artista    *alocaArtista(infoArtista dados);
 infoArtista preencherArtista(void);
 int         inserirArtista(Artista **raiz, Artista *novoNo);
 int         insercao(Artista **raiz, Artista *novoNo);
-
 Artista    *buscarArtista(Artista *raiz, const char *nome);
 void        mostrarArtistas(Artista *raiz);
 void        mostrarArtistasPreOrdem(Artista *raiz);
-
 Artista    *move2EsqRed(Artista *raiz);
 Artista    *move2DirRed(Artista *raiz);
 Artista    *removeMenor(Artista *raiz);
 Artista    *procuraMenor(Artista *raiz);
-
 int         removeArtista(Artista **raiz, const char *nomeArtista);
 Artista    *removeNo(Artista *raiz, const char *nomeArtista);
-
 void        liberarArvore(Artista *raiz);
-
 void        liberarArvoreAlbum(struct Album *raiz);
 
 #endif

@@ -16,9 +16,9 @@ void menuMusicas(Album *alb);
 int main(void) {
     Artista *raizArt = NULL;
 
-    carregarBiblioteca("biblioteca.txt", &raizArt); // Lê ao iniciar
+    carregarBiblioteca("biblioteca_30.txt", &raizArt); // Lê ao iniciar
     menuArtistas(&raizArt);
-    salvarBiblioteca("biblioteca.txt", raizArt);    // Salva ao sair
+    salvarBiblioteca("biblioteca_30.txt", raizArt);    // Salva ao sair
     liberarArvore(raizArt);                         // Libera memória
     return 0;
 }

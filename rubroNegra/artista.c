@@ -151,8 +151,6 @@ Artista *buscarArtista(Artista *raiz, const char *nome)
     return raiz; // se não achar, raiz será NULL
 }
 
-
-
 // Impressão in-order
 void mostrarArtistas(Artista *raiz)
 {
@@ -381,80 +379,3 @@ void liberarArvore(Artista *raiz)
         free(raiz);
     }
 }
-
-
-// int main(void)
-// {
-//     Artista *raiz = NULL;
-
-//     infoArtista a = {"Chico", "MPB",  "Solo", 5};
-//     infoArtista b = {"Ana",   "Pop",  "Banda",2};
-//     infoArtista c = {"Zeca",  "Samba","Solo", 7};
-//     infoArtista d = {"Beto",  "Rock", "Solo", 1};
-//     infoArtista e = {"Lia",   "Indie","Solo", 3};
-//     infoArtista f = {"Rafa",  "Jazz", "Banda",4};
-
-//     // Inserções
-//     insercao(&raiz, alocaArtista(a));
-//     insercao(&raiz, alocaArtista(b));
-//     insercao(&raiz, alocaArtista(c));
-//     insercao(&raiz, alocaArtista(d));
-//     insercao(&raiz, alocaArtista(e));
-//     insercao(&raiz, alocaArtista(f));
-
-//     printf(">>> Pre-ordem (inicial):\n");
-//     mostrarArtistasPreOrdem(raiz);
-
-//     // Busca simples
-//     Artista *encontrado = buscarArtista(raiz, "Ana");
-//     if (encontrado) printf("Achei %s\n\n", encontrado->info.nome);
-
-//     // 1) Remover folha (escolha provável após balanceamentos)
-//     printf(">>> Removendo 'Rafa' (folha?):\n");
-//     if (removeArtista(&raiz, "Rafa"))
-//         mostrarArtistasPreOrdem(raiz);
-//     else
-//         printf("Nao removido (nao encontrado)\n");
-//     printf("\n");
-
-//     // 2) Remover nó com 1 filho (depende do estado após rotações)
-//     printf(">>> Removendo 'Beto' (possivel 1 filho):\n");
-//     if (removeArtista(&raiz, "Beto"))
-//         mostrarArtistasPreOrdem(raiz);
-//     else
-//         printf("Nao removido (nao encontrado)\n");
-//     printf("\n");
-
-//     // 3) Remover nó com 2 filhos (geralmente 'Chico' ou 'Zeca' acabam com 2)
-//     printf(">>> Removendo 'Chico' (2 filhos?):\n");
-//     if (removeArtista(&raiz, "Chico"))
-//         mostrarArtistasPreOrdem(raiz);
-//     else
-//         printf("Nao removido (nao encontrado)\n");
-//     printf("\n");
-
-//     // 4) Remover a raiz atual (qualquer que seja após balanceamentos)
-//     if (raiz) {
-//         char raizNome[50];
-//         strncpy(raizNome, raiz->info.nome, sizeof(raizNome));
-//         raizNome[sizeof(raizNome)-1] = '\0';
-
-//         printf(">>> Removendo a raiz atual ('%s'):\n", raizNome);
-//         if (removeArtista(&raiz, raizNome))
-//             mostrarArtistasPreOrdem(raiz);
-//         else
-//             printf("Nao removido (nao encontrado)\n");
-//         printf("\n");
-//     }
-
-//     // 5) Tentar remover um nome inexistente
-//     printf(">>> Removendo 'NaoExiste':\n");
-//     if (removeArtista(&raiz, "NaoExiste"))
-//         mostrarArtistasPreOrdem(raiz);
-//     else
-//         printf("Nao removido (nao encontrado)\n");
-//     printf("\n");
-
-//     liberarArvore(raiz);
-//     return 0;
-// }

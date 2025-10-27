@@ -21,4 +21,10 @@ typedef struct {
     int cap;
 } CaminhoRB;
 
+typedef struct {
+    int    encontrado;       /* 1 = achou, 0 = não achou */
+    int    nosVisitados;     /* quantidade de nós visitados */
+    double tempo_ms;         /* duração da busca em milissegundos */
+} ResultadoBusca;
+
 #endif

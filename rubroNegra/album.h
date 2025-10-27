@@ -27,19 +27,15 @@ Album  *rotacionaEsqAlbum(Album *raiz);
 Album  *rotacionaDirAlbum(Album *raiz);
 void    trocaCorAlbum(Album *raiz);
 void    balanceamentoAlbum(Album **raiz);
-
 int     insereNoAlbum(Album **raiz, Album *novoNo);
 int     insercaoAlbum(Album **raiz, Album *novoNo);
-
 Album  *BuscarNoPorTituloAlbum(Album *raiz, const char *tituloBusca);
 Album  *move2EsqRedAlbum(Album *raiz);
 Album  *move2DirRedAlbum(Album *raiz);
 Album  *removeMenorAlbum(Album *raiz);
 Album  *procuraMenorAlbum(Album *raiz);
-
 int     removeAlbum(Album **raiz, const char *titulo);
 Album  *removeNoAlbum(Album *raiz, const char *titulo);
-
 void    mostrarAlbumPreOrdem(Album *raiz);
 void    liberarArvoreAlbum(Album *raiz);
 
